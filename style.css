@@ -40,7 +40,7 @@ body { margin: 0; font-family: Arial, sans-serif; color: white; }
 
 .formulario button {
   padding: 10px;
-  background-color: green;
+  background-color: red;
   color: white;
   border: none;
   cursor: pointer;
