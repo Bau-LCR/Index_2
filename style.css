@@ -14,7 +14,7 @@ body { margin: 0; font-family: Arial, sans-serif; color: white; }
 }
 
 /* ABAJO: negro */ 
-.abajo { background-color: black; padding: 40px; text-align: center; } 
+.abajo { background-color: black; padding: 400px; text-align: center; } 
 
 /* CENTRAR IMÁGENES */ 
 .centrar { display: block; margin-left: auto; margin-right: auto; }
