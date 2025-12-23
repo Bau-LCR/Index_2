@@ -1,11 +1,33 @@
 body {
   margin: 0;
-  min-height: 100vh;
-  background: linear-gradient(to bottom, black, red);
-  color: white;
   font-family: Arial, sans-serif;
+  color: white;
 }
 
+/* ARRIBA: degradé */
+.arriba {
+  background: linear-gradient(to bottom, black, green);
+  padding: 40px;
+  text-align: center;
+}
+
+/* LÍNEA */
+.linea {
+  width: 60%;
+  height: 3px;
+  background-color: green;
+  border: none;
+  margin: 40px auto;
+}
+
+/* ABAJO: negro */
+.abajo {
+  background-color: black;
+  padding: 40px;
+  text-align: center;
+}
+
+/* CENTRAR IMÁGENES */
 .centrar {
   display: block;
   margin-left: auto;
