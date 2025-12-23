@@ -1,5 +1,6 @@
 body {
   margin: 0;
   min-height: 100vh;
-  background: linear-gradient(to right, red, blue);
+  background: linear-gradient(to bottom, #000000, #0f9b0f);
+  color: white;
 }
