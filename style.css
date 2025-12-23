@@ -1,3 +1,9 @@
+body { margin: 0; font-family: Arial, sans-serif; color: white; }
+
+/* ARRIBA: degradé */ 
+.arriba { background: linear-gradient(to bottom, black, red); padding: 40px; text-align: center; }
+
+/* LÍNEA */ 
 /* LÍNEA DIVISORIA */
 .linea {
   width: 100%;
@@ -6,3 +12,9 @@
   border: none;
   margin: 0;
 }
+
+/* ABAJO: negro */ 
+.abajo { background-color: black; padding: 40px; text-align: center; } 
+
+/* CENTRAR IMÁGENES */ 
+.centrar { display: block; margin-left: auto; margin-right: auto; }
