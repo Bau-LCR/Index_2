@@ -1,35 +1,8 @@
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  color: white;
-}
-
-/* ARRIBA: degradé */
-.arriba {
-  background: linear-gradient(to bottom, black, red);
-  padding: 40px;
-  text-align: center;
-}
-
-/* LÍNEA */
+/* LÍNEA DIVISORIA */
 .linea {
-  width: 60%;
+  width: 100%;
   height: 3px;
-  background-color: red;
+  background-color: white;
   border: none;
-  margin: 40px auto;
-}
-
-/* ABAJO: negro */
-.abajo {
-  background-color: black;
-  padding: 40px;
-  text-align: center;
-}
-
-/* CENTRAR IMÁGENES */
-.centrar {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
+  margin: 0;
 }
