@@ -22,3 +22,31 @@ body { margin: 0; font-family: Arial, sans-serif; color: white; }
 
 /* CENTRAR IMÁGENES */ 
 .centrar { display: block; margin-left: auto; margin-right: auto; }
+
+.formulario {
+  max-width: 400px;
+  margin: 30px auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.formulario input,
+.formulario textarea {
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+}
+
+.formulario button {
+  padding: 10px;
+  background-color: green;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.formulario button:hover {
+  background-color: darkgreen;
+}
