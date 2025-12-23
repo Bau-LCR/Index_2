@@ -6,7 +6,7 @@ body {
 
 /* ARRIBA: degradé */
 .arriba {
-  background: linear-gradient(to bottom, black, green);
+  background: linear-gradient(to bottom, black, red);
   padding: 40px;
   text-align: center;
 }
@@ -15,7 +15,7 @@ body {
 .linea {
   width: 60%;
   height: 3px;
-  background-color: green;
+  background-color: red;
   border: none;
   margin: 40px auto;
 }
