@@ -13,8 +13,12 @@ body { margin: 0; font-family: Arial, sans-serif; color: white; }
   margin: 0;
 }
 
-/* ABAJO: negro */ 
-.abajo { background-color: black; padding: 400px; text-align: center; } 
+.abajo {
+  background-color: black;
+  padding: 40px;
+  padding-bottom: 400px;
+  text-align: center;
+}
 
 /* CENTRAR IMÁGENES */ 
 .centrar { display: block; margin-left: auto; margin-right: auto; }
