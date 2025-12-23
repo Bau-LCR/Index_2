@@ -1,9 +1,1 @@
-html, body {
-  margin: 0;
-  height: 100%;
-}
-
-body {
-  background: linear-gradient(to bottom, black, green);
-  color: white;
-}
+<body style="background: linear-gradient(to right, red, blue);">
