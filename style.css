@@ -5,3 +5,8 @@ body {
   color: white;
   font-family: Arial, sans-serif;
 }
+.img-centro {
+  display: block;
+  margin: 40px auto;
+  width: 300px;
+}
