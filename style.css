@@ -1,765 +1,569 @@
-/* ==========================================
-   ESPACIO MURIALDINO — style.css
-   Paleta: Azul #1a3a8c | Rojo #c0392b | Dorado #f0c010 | Blanco #f8f8f8
-   ========================================== */
+cat > /mnt/user-data/outputs/espacio-murialdino/index.html << 'HTMLEOF'
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Legado Murialdino — Centro de Estudiantes</title>
+  <meta name="description" content="Legado Murialdino — La lista que representa a todos los estudiantes del Instituto Murialdo. Compromiso, unidad y acción." />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Raleway:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet" />
+</head>
+<body>
 
-:root {
-  --blue:       #1a3a8c;
-  --blue-dark:  #0f2566;
-  --blue-light: #2550c0;
-  --red:        #c0392b;
-  --red-dark:   #8b0000;
-  --gold:       #f0c010;
-  --gold-light: #f7d84a;
-  --white:      #f8f8f8;
-  --off-white:  #eef1f8;
-  --dark:       #0a0e1a;
-  --dark-mid:   #111827;
-  --text-light: rgba(255,255,255,0.82);
-  --text-muted: rgba(255,255,255,0.5);
-  --border:     rgba(240,192,16,0.2);
+  <!-- =============================================
+       LOGO ÚNICO COMO SVG SYMBOL — se reutiliza
+       con <use href="#logo-shield"> en toda la web
+       ============================================= -->
+  <svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+    <defs>
+      <!-- Gradientes globales -->
+      <linearGradient id="gBlue" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#2550c0"/>
+        <stop offset="100%" stop-color="#0f2566"/>
+      </linearGradient>
+      <linearGradient id="gRed" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#d94040"/>
+        <stop offset="100%" stop-color="#8b0000"/>
+      </linearGradient>
+      <filter id="fGlow" x="-30%" y="-30%" width="160%" height="160%">
+        <feGaussianBlur stdDeviation="2.5" result="blur"/>
+        <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+      <filter id="fShadow" x="-20%" y="-20%" width="140%" height="140%">
+        <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000" flood-opacity="0.5"/>
+      </filter>
 
-  --radius:     12px;
-  --radius-lg:  20px;
-  --transition: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-  --font-display: 'Cinzel', serif;
-  --font-body:    'Raleway', sans-serif;
-  --font-italic:  'Playfair Display', serif;
-}
+      <!-- ══════════════════════════════════
+           ESCUDO — viewBox 0 0 100 115
+           Este es el único logo del grupo.
+           Basado en el escudo del instituto:
+           azul | banda dorada diagonal | rojo
+           estrella 5p | estrella 7p | flor-de-lis x2
+           cinta HAUD MORI
+           ══════════════════════════════════ -->
+      <symbol id="logo-shield" viewBox="0 0 100 115" xmlns="http://www.w3.org/2000/svg">
+        <g filter="url(#fShadow)">
+          <!-- Cuerpo azul del escudo -->
+          <path d="M5 4 H95 V78 Q50 102 5 78 Z" fill="url(#gBlue)"/>
 
-/* ---- RESET ---- */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; font-size: 16px; }
-body {
-  font-family: var(--font-body);
-  background: var(--dark);
-  color: var(--white);
-  overflow-x: hidden;
-  cursor: none;
-}
-a { text-decoration: none; color: inherit; }
-img, svg { display: block; }
+          <!-- Banda diagonal dorada (de esquina sup-izq a esq inf-der) -->
+          <polygon points="5,4 27,4 95,58 95,72 73,72 5,18" fill="#f0c010"/>
 
-/* ==========================================
-   CURSOR PERSONALIZADO
-   ========================================== */
-.cursor {
-  width: 10px; height: 10px;
-  background: var(--gold);
-  border-radius: 50%;
-  position: fixed; top: 0; left: 0;
-  pointer-events: none; z-index: 9999;
-  transform: translate(-50%, -50%);
-  transition: transform 0.1s ease, width 0.3s ease, height 0.3s ease;
-}
-.cursor-follower {
-  width: 36px; height: 36px;
-  border: 1.5px solid var(--gold);
-  border-radius: 50%;
-  position: fixed; top: 0; left: 0;
-  pointer-events: none; z-index: 9998;
-  transform: translate(-50%, -50%);
-  transition: transform 0.25s ease, opacity 0.3s ease;
-  opacity: 0.6;
-}
-body:hover .cursor { opacity: 1; }
-a:hover ~ .cursor, button:hover ~ .cursor { width: 20px; height: 20px; }
+          <!-- Área roja (triángulo sup-der) -->
+          <polygon points="27,4 95,4 95,58 73,72" fill="url(#gRed)"/>
 
-/* ==========================================
-   PARTÍCULAS
-   ========================================== */
-.particles {
-  position: fixed; inset: 0;
-  pointer-events: none; z-index: 0;
-  overflow: hidden;
-}
-.particle {
-  position: absolute;
-  width: 3px; height: 3px;
-  background: var(--gold);
-  border-radius: 50%;
-  opacity: 0;
-  animation: floatUp linear infinite;
-}
-@keyframes floatUp {
-  0%   { transform: translateY(100vh) scale(0); opacity: 0; }
-  10%  { opacity: 0.6; }
-  90%  { opacity: 0.2; }
-  100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
-}
+          <!-- Borde exterior dorado -->
+          <path d="M5 4 H95 V78 Q50 102 5 78 Z" fill="none" stroke="#f0c010" stroke-width="2"/>
+          <!-- Filo interior blanco sutil -->
+          <path d="M9 8 H91 V75 Q50 97 9 75 Z" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
 
-/* ==========================================
-   NAVBAR
-   ========================================== */
-.navbar {
-  position: fixed; top: 0; left: 0; right: 0;
-  z-index: 1000;
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 1rem 3rem;
-  transition: background var(--transition), backdrop-filter var(--transition), box-shadow var(--transition);
-}
-.navbar.scrolled {
-  background: rgba(10, 14, 26, 0.92);
-  backdrop-filter: blur(12px);
-  box-shadow: 0 2px 30px rgba(0,0,0,0.4);
-  border-bottom: 1px solid var(--border);
-}
-.nav-logo .logo-svg { width: 160px; height: auto; }
+          <!-- FLOR DE LIS 1 — área roja, arriba -->
+          <g transform="translate(71,22)" fill="#f0c010" filter="url(#fGlow)">
+            <path d="M0-10 C-1.5-7-3-4-1.2-2 C-3-0.5-5,2-3,4 C-1.5,6 0,4.5 0,4.5 C0,4.5 1.5,6 3,4 C5,2 3,-0.5 1.2,-2 C3,-4 1.5,-7 0,-10Z"/>
+            <rect x="-2.5" y="4" width="5" height="2.5" rx="0.8"/>
+            <path d="M-5.5,-1 C-7,0.5-6.5,3.5-4,3.5 C-2.5,3.5-2,2-2,2Z"/>
+            <path d="M5.5,-1 C7,0.5 6.5,3.5 4,3.5 C2.5,3.5 2,2 2,2Z"/>
+            <rect x="-4" y="6.5" width="8" height="1.5" rx="0.8"/>
+          </g>
 
-.nav-links {
-  display: flex; gap: 2.2rem;
-  list-style: none;
-}
-.nav-link {
-  font-family: var(--font-display);
-  font-size: 0.72rem;
-  letter-spacing: 2px;
-  color: var(--text-light);
-  text-transform: uppercase;
-  position: relative;
-  transition: color var(--transition);
-}
-.nav-link::after {
-  content: '';
-  position: absolute; bottom: -4px; left: 0; right: 0;
-  height: 1px;
-  background: var(--gold);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform var(--transition);
-}
-.nav-link:hover { color: var(--gold); }
-.nav-link:hover::after { transform: scaleX(1); }
+          <!-- FLOR DE LIS 2 — área roja, abajo -->
+          <g transform="translate(82,42) scale(0.82)" fill="#f0c010" filter="url(#fGlow)">
+            <path d="M0-10 C-1.5-7-3-4-1.2-2 C-3-0.5-5,2-3,4 C-1.5,6 0,4.5 0,4.5 C0,4.5 1.5,6 3,4 C5,2 3,-0.5 1.2,-2 C3,-4 1.5,-7 0,-10Z"/>
+            <rect x="-2.5" y="4" width="5" height="2.5" rx="0.8"/>
+            <path d="M-5.5,-1 C-7,0.5-6.5,3.5-4,3.5 C-2.5,3.5-2,2-2,2Z"/>
+            <path d="M5.5,-1 C7,0.5 6.5,3.5 4,3.5 C2.5,3.5 2,2 2,2Z"/>
+            <rect x="-4" y="6.5" width="8" height="1.5" rx="0.8"/>
+          </g>
 
-.hamburger {
-  display: none;
-  flex-direction: column; gap: 5px;
-  background: none; border: none; cursor: pointer; padding: 4px;
-}
-.hamburger span {
-  display: block; width: 26px; height: 2px;
-  background: var(--gold);
-  transition: var(--transition);
-}
+          <!-- ESTRELLA 5 PUNTAS — área azul superior izq -->
+          <polygon
+            points="22,38 24.4,31 26.8,38 34,38 28.2,42.4 30.6,49.4 22,44.2 15.4,49.4 17.8,42.4 12,38"
+            fill="white" filter="url(#fGlow)"/>
 
-/* ==========================================
-   HERO
-   ========================================== */
-.hero {
-  min-height: 100vh;
-  display: flex; align-items: center; justify-content: center;
-  position: relative;
-  overflow: hidden;
-  padding: 7rem 2rem 4rem;
-}
+          <!-- ESTRELLA 7 PUNTAS — área azul inferior izq -->
+          <g transform="translate(28,68)" fill="white" filter="url(#fGlow)">
+            <polygon points="
+              0,-11
+              2.67,-3.54  10.46,-3.54
+              4.33,1.35   7,9.11
+              0,4.76     -7,9.11
+             -4.33,1.35 -10.46,-3.54
+             -2.67,-3.54
+            "/>
+          </g>
+        </g>
 
-/* Formas de fondo animadas */
-.hero-bg-shapes { position: absolute; inset: 0; pointer-events: none; }
-.shape {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(80px);
-  animation: shapePulse 8s ease-in-out infinite alternate;
-}
-.shape-1 {
-  width: 500px; height: 500px;
-  background: rgba(26, 58, 140, 0.45);
-  top: -100px; left: -150px;
-}
-.shape-2 {
-  width: 400px; height: 400px;
-  background: rgba(192, 57, 43, 0.3);
-  top: 30%; right: -80px;
-  animation-delay: 2s;
-}
-.shape-3 {
-  width: 350px; height: 350px;
-  background: rgba(240, 192, 16, 0.12);
-  bottom: -80px; left: 40%;
-  animation-delay: 4s;
-}
-@keyframes shapePulse {
-  from { transform: scale(1) translate(0,0); }
-  to   { transform: scale(1.2) translate(20px, -20px); }
-}
+        <!-- CINTA "HAUD MORI" -->
+        <g transform="translate(50,107)">
+          <!-- Alas izquierda y derecha -->
+          <path d="M-45,-5 L-42,0 L-45,5 L-48,0 Z" fill="#b8cce0"/>
+          <path d="M45,-5 L42,0 L45,5 L48,0 Z" fill="#b8cce0"/>
+          <!-- Cuerpo cinta -->
+          <rect x="-42" y="-6" width="84" height="12" rx="2" fill="#ddeeff" stroke="#8899bb" stroke-width="0.7"/>
+          <!-- Pliegue izquierdo -->
+          <rect x="-48" y="-5" width="10" height="10" rx="1.5" fill="#c8d8ee" stroke="#8899bb" stroke-width="0.7"/>
+          <!-- Pliegue derecho -->
+          <rect x="38" y="-5" width="10" height="10" rx="1.5" fill="#c8d8ee" stroke="#8899bb" stroke-width="0.7"/>
+          <text x="0" y="4.5" text-anchor="middle"
+                font-family="Cinzel, serif" font-size="6" font-weight="700"
+                fill="#1a3a8c" letter-spacing="3">HAUD MORI</text>
+        </g>
+      </symbol>
 
-.hero-content {
-  display: flex; align-items: center; gap: 5rem;
-  max-width: 1200px; width: 100%;
-  z-index: 1;
-}
+      <!-- VERSION NAVBAR: solo escudo sin cinta ni texto, viewBox recortado -->
+      <symbol id="logo-shield-sm" viewBox="0 0 100 90" xmlns="http://www.w3.org/2000/svg">
+        <use href="#logo-shield"/>
+      </symbol>
+    </defs>
+  </svg>
 
-.hero-logo {
-  flex-shrink: 0;
-}
-.main-logo-svg {
-  width: 260px; height: auto;
-  filter: drop-shadow(0 20px 40px rgba(240,192,16,0.25));
-  animation: floatLogo 5s ease-in-out infinite;
-}
-@keyframes floatLogo {
-  0%, 100% { transform: translateY(0); }
-  50%       { transform: translateY(-12px); }
-}
+  <!-- CURSOR -->
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-follower" id="cursorFollower"></div>
 
-.hero-text { flex: 1; }
-.hero-eyebrow {
-  font-family: var(--font-display);
-  font-size: 0.68rem;
-  letter-spacing: 3px;
-  color: var(--gold);
-  text-transform: uppercase;
-  margin-bottom: 1.2rem;
-  opacity: 0;
-  animation: fadeUp 0.7s 0.2s forwards;
-}
-.hero-title {
-  font-family: var(--font-display);
-  font-size: clamp(2.8rem, 6vw, 5rem);
-  font-weight: 900;
-  line-height: 1.05;
-  margin-bottom: 1.4rem;
-}
-.title-line {
-  display: block;
-  opacity: 0;
-  animation: fadeUp 0.7s forwards;
-}
-.title-line:nth-child(1) { animation-delay: 0.35s; }
-.title-line:nth-child(2) { animation-delay: 0.55s; }
-.title-line.gold { color: var(--gold); }
+  <!-- PARTÍCULAS -->
+  <div class="particles" id="particles"></div>
 
-.hero-subtitle {
-  font-size: 1.1rem;
-  font-weight: 400;
-  color: var(--text-light);
-  line-height: 1.7;
-  max-width: 480px;
-  margin-bottom: 2.2rem;
-  opacity: 0;
-  animation: fadeUp 0.7s 0.7s forwards;
-}
+  <!-- TOAST NOTIFICACIÓN -->
+  <div class="toast" id="toast" role="alert" aria-live="polite"></div>
 
-.hero-cta {
-  display: flex; gap: 1rem; flex-wrap: wrap;
-  margin-bottom: 2rem;
-  opacity: 0;
-  animation: fadeUp 0.7s 0.9s forwards;
-}
+  <!-- BOTÓN VOLVER ARRIBA -->
+  <button class="back-to-top" id="backToTop" aria-label="Volver al inicio">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+      <path d="M18 15l-6-6-6 6"/>
+    </svg>
+  </button>
 
-/* Botones */
-.btn {
-  display: inline-block;
-  font-family: var(--font-display);
-  font-size: 0.72rem;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  padding: 0.85rem 2rem;
-  border-radius: 4px;
-  transition: var(--transition);
-  cursor: none;
-}
-.btn-primary {
-  background: var(--gold);
-  color: var(--dark);
-  font-weight: 700;
-  box-shadow: 0 4px 24px rgba(240,192,16,0.35);
-}
-.btn-primary:hover {
-  background: var(--gold-light);
-  transform: translateY(-3px);
-  box-shadow: 0 8px 32px rgba(240,192,16,0.5);
-}
-.btn-outline {
-  border: 1.5px solid var(--gold);
-  color: var(--gold);
-}
-.btn-outline:hover {
-  background: rgba(240,192,16,0.1);
-  transform: translateY(-3px);
-}
-.btn-ghost {
-  color: var(--text-light);
-  border: 1px solid rgba(255,255,255,0.2);
-}
-.btn-ghost:hover {
-  border-color: var(--gold);
-  color: var(--gold);
-}
+  <!-- ══════════════ NAVBAR ══════════════ -->
+  <nav class="navbar" id="navbar">
+    <a href="#inicio" class="nav-logo" aria-label="Legado Murialdino - Inicio">
+      <!-- Logo unificado pequeño en navbar -->
+      <svg class="logo-nav-svg" aria-hidden="true">
+        <use href="#logo-shield"/>
+      </svg>
+      <span class="nav-brand">
+        <span class="nav-brand-top">Legado</span>
+        <span class="nav-brand-bot">Murialdino</span>
+      </span>
+    </a>
 
-.hero-divider {
-  display: flex; align-items: center; gap: 1rem;
-  opacity: 0;
-  animation: fadeUp 0.7s 1.1s forwards;
-}
-.hero-divider span:first-child,
-.hero-divider span:last-child {
-  flex: 1; height: 1px;
-  background: linear-gradient(to right, transparent, var(--border), transparent);
-}
-.latin-motto {
-  font-family: var(--font-italic);
-  font-style: italic;
-  font-size: 0.9rem;
-  color: var(--text-muted);
-  white-space: nowrap;
-}
+    <ul class="nav-links" id="navLinks" role="navigation" aria-label="Menú principal">
+      <li><a href="#inicio"      class="nav-link" data-section="inicio">Inicio</a></li>
+      <li><a href="#propuestas"  class="nav-link" data-section="propuestas">Propuestas</a></li>
+      <li><a href="#antibullying" class="nav-link" data-section="antibullying">Anti-bullying</a></li>
+      <li><a href="#equipo"      class="nav-link" data-section="equipo">Equipo</a></li>
+      <li><a href="#valores"     class="nav-link" data-section="valores">Valores</a></li>
+      <li><a href="#contacto"    class="nav-link" data-section="contacto">Contacto</a></li>
+    </ul>
 
-/* Scroll indicator */
-.scroll-indicator {
-  position: absolute; bottom: 2rem; left: 50%;
-  transform: translateX(-50%);
-  display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
-  z-index: 1;
-  opacity: 0;
-  animation: fadeUp 0.7s 1.4s forwards;
-}
-.scroll-line {
-  width: 1px; height: 50px;
-  background: linear-gradient(to bottom, var(--gold), transparent);
-  animation: scrollPulse 2s ease-in-out infinite;
-}
-.scroll-indicator span {
-  font-size: 0.65rem;
-  letter-spacing: 3px;
-  color: var(--text-muted);
-  text-transform: uppercase;
-}
-@keyframes scrollPulse {
-  0%, 100% { opacity: 1; transform: scaleY(1); }
-  50%       { opacity: 0.4; transform: scaleY(0.6); }
-}
+    <button class="hamburger" id="hamburger" aria-label="Abrir menú" aria-expanded="false" aria-controls="navLinks">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
 
-/* ==========================================
-   SECCIONES — ESTILOS COMUNES
-   ========================================== */
-section { position: relative; z-index: 1; }
+  <!-- ══════════════ HERO ══════════════ -->
+  <section class="hero" id="inicio" aria-label="Inicio">
+    <div class="hero-bg-shapes" aria-hidden="true">
+      <div class="shape shape-1"></div>
+      <div class="shape shape-2"></div>
+      <div class="shape shape-3"></div>
+    </div>
 
-.section-header {
-  text-align: center;
-  margin-bottom: 4rem;
-}
-.section-tag {
-  display: inline-block;
-  font-family: var(--font-display);
-  font-size: 0.68rem;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  color: var(--gold);
-  border: 1px solid var(--border);
-  padding: 0.35rem 1rem;
-  border-radius: 100px;
-  margin-bottom: 1rem;
-}
-.section-title {
-  font-family: var(--font-display);
-  font-size: clamp(2rem, 4vw, 3rem);
-  font-weight: 700;
-  line-height: 1.1;
-  color: var(--white);
-  margin-bottom: 0.8rem;
-}
-.section-title em {
-  font-style: normal;
-  color: var(--gold);
-  font-family: var(--font-italic);
-  font-style: italic;
-}
-.section-subtitle {
-  color: var(--text-muted);
-  font-size: 1rem;
-}
+    <div class="hero-content">
+      <!-- LOGO HERO — mismo symbol, grande -->
+      <div class="hero-logo" data-reveal>
+        <svg class="main-logo-svg" aria-label="Escudo de Legado Murialdino">
+          <use href="#logo-shield"/>
+        </svg>
+      </div>
 
-/* ==========================================
-   PROPUESTAS
-   ========================================== */
-.propuestas {
-  padding: 7rem 3rem;
-  max-width: 1300px; margin: 0 auto;
-}
+      <div class="hero-text">
+        <p class="hero-eyebrow" data-reveal>Centro de Estudiantes · Instituto Murialdo</p>
+        <h1 class="hero-title">
+          <span class="title-line" data-reveal data-delay="100">Legado</span>
+          <span class="title-line gold" data-reveal data-delay="220">Murialdino</span>
+        </h1>
+        <p class="hero-subtitle" data-reveal data-delay="340">
+          Juntos construimos el centro de estudiantes que merecemos.<br>
+          Con voz, compromiso y acción real.
+        </p>
+        <div class="hero-cta" data-reveal data-delay="460">
+          <a href="#propuestas"   class="btn btn-primary">Nuestras Propuestas</a>
+          <a href="#equipo"       class="btn btn-outline">Conocé al Equipo</a>
+        </div>
+        <div class="hero-divider" data-reveal data-delay="560">
+          <span></span><span class="latin-motto">Haud Mori</span><span></span>
+        </div>
+      </div>
+    </div>
 
-.propuestas-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 1.5rem;
-}
+    <div class="scroll-indicator" aria-hidden="true">
+      <div class="scroll-line"></div>
+      <span>Explorá</span>
+    </div>
+  </section>
 
-.propuesta-card {
-  background: linear-gradient(135deg, rgba(26,58,140,0.15), rgba(15,37,102,0.3));
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 2rem;
-  position: relative;
-  overflow: hidden;
-  transition: var(--transition);
-}
-.propuesta-card::before {
-  content: '';
-  position: absolute; inset: 0;
-  background: linear-gradient(135deg, rgba(240,192,16,0.05), transparent);
-  opacity: 0;
-  transition: var(--transition);
-}
-.propuesta-card:hover {
-  transform: translateY(-6px);
-  border-color: rgba(240,192,16,0.5);
-  box-shadow: 0 20px 40px rgba(0,0,0,0.3), 0 0 40px rgba(240,192,16,0.05);
-}
-.propuesta-card:hover::before { opacity: 1; }
+  <!-- ══════════════ PROPUESTAS ══════════════ -->
+  <section class="propuestas section-pad" id="propuestas">
+    <div class="section-header" data-reveal>
+      <span class="section-tag">¿Qué vamos a hacer?</span>
+      <h2 class="section-title">Nuestras <em>Propuestas</em></h2>
+      <p class="section-subtitle">Acciones concretas para transformar nuestro instituto</p>
+    </div>
 
-.card-icon {
-  width: 52px; height: 52px;
-  border: 1.5px solid var(--border);
-  border-radius: var(--radius);
-  display: flex; align-items: center; justify-content: center;
-  margin-bottom: 1.2rem;
-  color: var(--gold);
-  transition: var(--transition);
-}
-.card-icon svg { width: 26px; height: 26px; }
-.propuesta-card:hover .card-icon {
-  background: rgba(240,192,16,0.1);
-  border-color: var(--gold);
-}
+    <div class="propuestas-grid">
 
-.propuesta-card h3 {
-  font-family: var(--font-display);
-  font-size: 1.05rem;
-  margin-bottom: 0.7rem;
-  color: var(--white);
-}
-.propuesta-card p {
-  font-size: 0.9rem;
-  color: var(--text-light);
-  line-height: 1.7;
-  margin-bottom: 1.2rem;
-}
-.card-tag {
-  display: inline-block;
-  font-size: 0.65rem;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--gold);
-  background: rgba(240,192,16,0.1);
-  border: 1px solid rgba(240,192,16,0.2);
-  padding: 0.25rem 0.7rem;
-  border-radius: 100px;
-}
+      <article class="propuesta-card" data-reveal data-delay="0">
+        <div class="card-icon" aria-hidden="true">
+          <svg viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="18" stroke="currentColor" stroke-width="2"/><path d="M16 24h16M24 16v16" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+        </div>
+        <h3>Voz Estudiantil</h3>
+        <p>Asambleas mensuales abiertas donde cada estudiante puede proponer, debatir y votar iniciativas que afecten la vida del instituto.</p>
+        <span class="card-tag">Participación</span>
+      </article>
 
-/* ==========================================
-   EQUIPO
-   ========================================== */
-.equipo {
-  padding: 7rem 3rem;
-  position: relative;
-}
-.equipo-bg {
-  position: absolute; inset: 0;
-  background: linear-gradient(180deg, transparent, rgba(26,58,140,0.08), transparent);
-  pointer-events: none;
-}
-.equipo-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 2rem;
-  max-width: 1100px; margin: 0 auto;
-}
+      <article class="propuesta-card" data-reveal data-delay="80">
+        <div class="card-icon" aria-hidden="true">
+          <svg viewBox="0 0 48 48" fill="none"><path d="M8 40V20l16-12 16 12v20H30V28H18v12H8z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+        </div>
+        <h3>Espacios de Estudio</h3>
+        <p>Gestionar la habilitación de aulas para estudio grupal fuera del horario de clases, con sistema de reserva organizado.</p>
+        <span class="card-tag">Infraestructura</span>
+      </article>
 
-.miembro-card {
-  background: linear-gradient(160deg, rgba(26,58,140,0.2), rgba(10,14,26,0.6));
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 2.5rem 2rem;
-  display: flex; flex-direction: column; align-items: center;
-  text-align: center;
-  position: relative;
-  overflow: hidden;
-  transition: var(--transition);
-}
-.miembro-card.featured {
-  border-color: rgba(240,192,16,0.45);
-  background: linear-gradient(160deg, rgba(26,58,140,0.35), rgba(15,37,102,0.4));
-}
-.miembro-card.featured::after {
-  content: '';
-  position: absolute; top: 0; left: 0; right: 0;
-  height: 3px;
-  background: linear-gradient(to right, transparent, var(--gold), transparent);
-}
-.miembro-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 24px 48px rgba(0,0,0,0.35);
-}
+      <article class="propuesta-card" data-reveal data-delay="160">
+        <div class="card-icon" aria-hidden="true">
+          <svg viewBox="0 0 48 48" fill="none"><circle cx="24" cy="20" r="12" stroke="currentColor" stroke-width="2"/><path d="M12 40c0-6.627 5.373-12 12-12s12 5.373 12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+        <h3>Apoyo Entre Pares</h3>
+        <p>Sistema de tutorías donde estudiantes de años superiores acompañan a quienes tienen dificultades académicas o de adaptación.</p>
+        <span class="card-tag">Educación</span>
+      </article>
 
-.miembro-escudo {
-  width: 90px; margin-bottom: 1.5rem;
-  filter: drop-shadow(0 8px 16px rgba(240,192,16,0.2));
-  transition: var(--transition);
-}
-.miembro-card:hover .miembro-escudo {
-  filter: drop-shadow(0 12px 24px rgba(240,192,16,0.4));
-  transform: scale(1.05);
-}
-.miembro-escudo svg { width: 100%; }
+      <article class="propuesta-card" data-reveal data-delay="240">
+        <div class="card-icon" aria-hidden="true">
+          <svg viewBox="0 0 48 48" fill="none"><rect x="6" y="6" width="36" height="36" rx="4" stroke="currentColor" stroke-width="2"/><path d="M12 36l6-6 8 4 10-14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <h3>Transparencia Total</h3>
+        <p>Informes mensuales de gestión publicados, con acceso libre a todas las actas y decisiones del centro de estudiantes.</p>
+        <span class="card-tag">Gestión</span>
+      </article>
 
-.miembro-rol {
-  font-family: var(--font-display);
-  font-size: 0.65rem;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  color: var(--gold);
-  margin-bottom: 0.5rem;
-}
-.miembro-nombre {
-  font-family: var(--font-display);
-  font-size: 1.1rem;
-  font-weight: 400;
-  line-height: 1.4;
-  margin-bottom: 1rem;
-  color: var(--white);
-}
-.miembro-nombre strong {
-  font-weight: 900;
-  display: block;
-  font-size: 1.3rem;
-}
-.miembro-desc {
-  font-size: 0.88rem;
-  color: var(--text-light);
-  line-height: 1.7;
-  margin-bottom: 1.5rem;
-}
-.miembro-badge {
-  display: flex; align-items: center; gap: 0.4rem;
-  font-size: 0.65rem;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  color: var(--gold);
-  background: rgba(240,192,16,0.1);
-  border: 1px solid rgba(240,192,16,0.25);
-  padding: 0.3rem 0.8rem;
-  border-radius: 100px;
-}
-.miembro-badge svg { width: 12px; height: 12px; }
-.miembro-badge.secondary { color: #a8c0ff; background: rgba(168,192,255,0.08); border-color: rgba(168,192,255,0.2); }
-.miembro-badge.tertiary  { color: #ffa8a8; background: rgba(255,168,168,0.08); border-color: rgba(255,168,168,0.2); }
+      <article class="propuesta-card" data-reveal data-delay="320">
+        <div class="card-icon" aria-hidden="true">
+          <svg viewBox="0 0 48 48" fill="none"><path d="M24 8l3.5 10.5H38l-8.5 6.5 3.5 10.5L24 29l-9 6.5 3.5-10.5L10 18.5h10.5z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+        </div>
+        <h3>Actividades Culturales</h3>
+        <p>Eventos artísticos, torneos deportivos y jornadas recreativas que fortalezcan el sentido de comunidad entre los cursos.</p>
+        <span class="card-tag">Cultura</span>
+      </article>
 
-/* ==========================================
-   VALORES
-   ========================================== */
-.valores {
-  padding: 7rem 3rem;
-  max-width: 900px; margin: 0 auto;
-}
-.valores-layout {
-  display: flex; flex-direction: column; gap: 0;
-}
-.valor-item {
-  display: flex; align-items: flex-start; gap: 2rem;
-  padding: 2rem 0;
-}
-.valor-divider {
-  height: 1px;
-  background: linear-gradient(to right, transparent, var(--border), transparent);
-}
-.valor-number {
-  font-family: var(--font-display);
-  font-size: 3rem;
-  font-weight: 900;
-  color: transparent;
-  -webkit-text-stroke: 1px rgba(240,192,16,0.3);
-  line-height: 1;
-  flex-shrink: 0;
-  min-width: 70px;
-  transition: var(--transition);
-}
-.valor-item:hover .valor-number {
-  -webkit-text-stroke-color: var(--gold);
-  color: transparent;
-}
-.valor-content h3 {
-  font-family: var(--font-display);
-  font-size: 1.2rem;
-  margin-bottom: 0.6rem;
-  color: var(--white);
-}
-.valor-content p {
-  font-size: 0.95rem;
-  color: var(--text-light);
-  line-height: 1.75;
-}
+      <article class="propuesta-card" data-reveal data-delay="400">
+        <div class="card-icon" aria-hidden="true">
+          <svg viewBox="0 0 48 48" fill="none"><path d="M6 42l9-9m0 0l8-8m-8 8l-4-4m12-4l9-9m0 0c2-2 6-2 8 0s2 6 0 8" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><circle cx="34" cy="14" r="6" stroke="currentColor" stroke-width="2"/></svg>
+        </div>
+        <h3>Buzón de Ideas</h3>
+        <p>Canal permanente (físico y digital) para que cualquier estudiante proponga mejoras, de forma anónima si lo desea.</p>
+        <span class="card-tag">Innovación</span>
+      </article>
 
-.valores-quote {
-  display: flex; align-items: center; gap: 1.5rem;
-  margin-top: 4rem;
-  padding: 2.5rem;
-  border-radius: var(--radius);
-  background: rgba(240,192,16,0.04);
-}
-.quote-line { flex: 1; height: 1px; background: var(--border); }
-.valores-quote blockquote {
-  font-family: var(--font-italic);
-  font-style: italic;
-  font-size: 1rem;
-  color: var(--text-light);
-  text-align: center;
-  line-height: 1.7;
-  max-width: 480px;
-  flex-shrink: 0;
-}
-.valores-quote blockquote em {
-  color: var(--gold);
-  font-size: 1.15rem;
-}
+    </div>
+  </section>
 
-/* ==========================================
-   STATS
-   ========================================== */
-.stats-section {
-  padding: 5rem 3rem;
-  background: linear-gradient(135deg, rgba(26,58,140,0.2), rgba(192,57,43,0.1));
-  border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
-}
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 2rem;
-  max-width: 900px; margin: 0 auto;
-  text-align: center;
-}
-.stat-item { }
-.stat-number {
-  font-family: var(--font-display);
-  font-size: clamp(2.5rem, 5vw, 4rem);
-  font-weight: 900;
-  color: var(--gold);
-  line-height: 1;
-  margin-bottom: 0.5rem;
-  display: block;
-}
-.stat-label {
-  font-size: 0.8rem;
-  color: var(--text-muted);
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  font-family: var(--font-display);
-}
+  <!-- ══════════════ ANTI-BULLYING ══════════════ -->
+  <section class="antibullying section-pad" id="antibullying">
+    <div class="ab-inner">
+      <div class="ab-text" data-reveal>
+        <span class="section-tag ab-tag">Tolerancia cero</span>
+        <h2 class="section-title">Instituto Libre de <em>Bullying</em></h2>
+        <p class="ab-lead">
+          En Legado Murialdino creemos que ningún estudiante debe sentir miedo de ir al instituto. El acoso escolar destruye proyectos de vida — y vamos a combatirlo con acciones concretas.
+        </p>
 
-/* ==========================================
-   CONTACTO
-   ========================================== */
-.contacto {
-  padding: 8rem 3rem;
-}
-.contacto-inner {
-  max-width: 640px; margin: 0 auto;
-  text-align: center;
-}
-.contacto-logo {
-  width: 80px; margin: 0 auto 2rem;
-  animation: floatLogo 5s ease-in-out infinite;
-}
-.contacto-logo svg { width: 100%; }
-.contacto-title {
-  font-family: var(--font-display);
-  font-size: clamp(2rem, 4vw, 3rem);
-  font-weight: 900;
-  margin-bottom: 1rem;
-  color: var(--white);
-}
-.contacto-text {
-  color: var(--text-light);
-  line-height: 1.7;
-  margin-bottom: 2.5rem;
-  font-size: 1rem;
-}
-.contacto-cta {
-  display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;
-  margin-bottom: 3rem;
-}
-.contacto-motto {
-  display: flex; align-items: center; gap: 0.8rem;
-  justify-content: center;
-  font-size: 0.7rem;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--text-muted);
-  font-family: var(--font-display);
-}
-.dot { color: var(--gold); }
+        <div class="ab-acciones">
+          <div class="ab-accion" data-reveal data-delay="100">
+            <div class="ab-num">01</div>
+            <div>
+              <h4>Canal de denuncia anónima</h4>
+              <p>Implementar un buzón físico y un formulario digital donde cualquier estudiante pueda reportar situaciones de acoso de forma confidencial, con seguimiento garantizado.</p>
+            </div>
+          </div>
+          <div class="ab-accion" data-reveal data-delay="200">
+            <div class="ab-num">02</div>
+            <div>
+              <h4>Capacitación docente y estudiantil</h4>
+              <p>Jornadas anuales para aprender a identificar, prevenir e intervenir ante situaciones de bullying, tanto físico como verbal y digital (ciberbullying).</p>
+            </div>
+          </div>
+          <div class="ab-accion" data-reveal data-delay="300">
+            <div class="ab-num">03</div>
+            <div>
+              <h4>Red de compañeros guardianes</h4>
+              <p>Grupo de estudiantes voluntarios capacitados para acompañar a víctimas, mediar conflictos y actuar como primer eslabón de contención.</p>
+            </div>
+          </div>
+          <div class="ab-accion" data-reveal data-delay="400">
+            <div class="ab-num">04</div>
+            <div>
+              <h4>Protocolo claro de actuación</h4>
+              <p>Exigir a las autoridades del instituto un protocolo escrito, público y efectivo para cada situación de acoso, con plazos y responsables definidos.</p>
+            </div>
+          </div>
+        </div>
+      </div>
 
-/* ==========================================
-   FOOTER
-   ========================================== */
-.footer {
-  border-top: 1px solid var(--border);
-  padding: 1.5rem 3rem;
-}
-.footer-inner {
-  max-width: 1200px; margin: 0 auto;
-  display: flex; gap: 0.8rem; justify-content: center; align-items: center;
-  font-size: 0.75rem;
-  color: var(--text-muted);
-  font-family: var(--font-display);
-  letter-spacing: 1.5px;
-}
-.footer-sep { color: var(--gold); }
+      <div class="ab-visual" data-reveal data-delay="200" aria-hidden="true">
+        <div class="ab-circle-wrap">
+          <div class="ab-circle ab-c1"></div>
+          <div class="ab-circle ab-c2"></div>
+          <div class="ab-circle ab-c3"></div>
+          <div class="ab-icon-center">
+            <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Escudo protector -->
+              <path d="M40 8 L66 20 V44 C66 58 40 72 40 72 C40 72 14 58 14 44 V20 Z" fill="rgba(26,58,140,0.6)" stroke="#f0c010" stroke-width="2"/>
+              <!-- Paloma / símbolo paz -->
+              <path d="M40 30 C36 30 32 34 34 38 C36 42 40 42 40 48 C40 42 44 42 46 38 C48 34 44 30 40 30Z" fill="#f0c010"/>
+              <path d="M34 36 C30 34 26 36 28 40" stroke="#f0c010" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M46 36 C50 34 54 36 52 40" stroke="#f0c010" stroke-width="1.5" stroke-linecap="round"/>
+              <!-- Tachado de puño (NO bullying) -->
+              <circle cx="59" cy="59" r="14" fill="#c0392b" stroke="white" stroke-width="1.5"/>
+              <path d="M51 67 L67 51" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+              <path d="M55 55 C55 53 57 51 59 51 C61 51 63 53 63 55 L63 60 L55 60 Z" fill="white"/>
+              <rect x="55" y="59" width="8" height="6" rx="1" fill="white"/>
+            </svg>
+          </div>
+        </div>
+        <p class="ab-stat-text">
+          <strong class="ab-stat-num">1 de cada 3</strong>
+          estudiantes en Argentina ha sufrido alguna forma de acoso escolar.
+          <em>Legado Murialdino dice: basta.</em>
+        </p>
+      </div>
+    </div>
+  </section>
 
-/* ==========================================
-   REVEAL ANIMATIONS
-   ========================================== */
-[data-reveal] {
-  opacity: 0;
-  transform: translateY(30px);
-  transition: opacity 0.7s ease, transform 0.7s ease;
-}
-[data-reveal].revealed {
-  opacity: 1;
-  transform: translateY(0);
-}
-[data-delay="100"] { transition-delay: 0.1s; }
-[data-delay="200"] { transition-delay: 0.2s; }
-[data-delay="300"] { transition-delay: 0.3s; }
-[data-delay="400"] { transition-delay: 0.4s; }
-[data-delay="500"] { transition-delay: 0.5s; }
+  <!-- ══════════════ EQUIPO ══════════════ -->
+  <section class="equipo section-pad" id="equipo">
+    <div class="equipo-bg" aria-hidden="true"></div>
+    <div class="section-header" data-reveal>
+      <span class="section-tag">Quiénes somos</span>
+      <h2 class="section-title">Nuestro <em>Equipo</em></h2>
+      <p class="section-subtitle">Comprometidos con cada estudiante del instituto</p>
+    </div>
 
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
+    <div class="equipo-grid">
 
-/* ==========================================
-   RESPONSIVE
-   ========================================== */
-@media (max-width: 900px) {
-  .hero-content { flex-direction: column; gap: 2.5rem; text-align: center; }
-  .hero-subtitle { max-width: 100%; }
-  .hero-cta { justify-content: center; }
-  .hero-divider { justify-content: center; }
-  .main-logo-svg { width: 180px; }
-  .navbar { padding: 1rem 1.5rem; }
-  .nav-links { display: none; }
-  .nav-links.open {
-    display: flex; flex-direction: column;
-    position: absolute; top: 100%; left: 0; right: 0;
-    background: rgba(10, 14, 26, 0.97);
-    border-bottom: 1px solid var(--border);
-    padding: 1.5rem;
-    gap: 1.2rem;
-    align-items: center;
-  }
-  .hamburger { display: flex; }
-  .propuestas, .equipo, .valores, .contacto { padding: 5rem 1.5rem; }
-  .valores-quote { flex-direction: column; }
-  .quote-line { display: none; }
-}
+      <!-- PRESIDENTE -->
+      <article class="miembro-card featured" data-reveal data-delay="0">
+        <div class="miembro-logo-wrap" aria-hidden="true">
+          <!-- MISMO logo-shield en todas las tarjetas -->
+          <svg class="miembro-shield-svg">
+            <use href="#logo-shield"/>
+          </svg>
+        </div>
+        <div class="miembro-info">
+          <div class="miembro-rol">Presidente</div>
+          <h3 class="miembro-nombre">López Corte Real<br><strong>Bautista</strong></h3>
+          <p class="miembro-desc">Líder de Legado Murialdino. Comprometido con representar la voz de todos los estudiantes con integridad y dedicación.</p>
+          <div class="miembro-badge">
+            <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 2l2.4 6.4H18l-4.8 3.6 1.8 6-5-3.6-5 3.6 1.8-6L2 8.4h5.6z"/></svg>
+            Candidato a Presidente
+          </div>
+        </div>
+      </article>
 
-@media (max-width: 600px) {
-  .equipo-grid, .propuestas-grid { grid-template-columns: 1fr; }
-  .stats-grid { grid-template-columns: 1fr 1fr; }
-  .valor-item { flex-direction: column; gap: 0.8rem; }
-  .valor-number { font-size: 2rem; }
-  .cursor, .cursor-follower { display: none; }
-  body { cursor: auto; }
-}
+      <!-- VICEPRESIDENTE -->
+      <article class="miembro-card" data-reveal data-delay="150">
+        <div class="miembro-logo-wrap" aria-hidden="true">
+          <svg class="miembro-shield-svg">
+            <use href="#logo-shield"/>
+          </svg>
+        </div>
+        <div class="miembro-info">
+          <div class="miembro-rol">Vicepresidente</div>
+          <h3 class="miembro-nombre">Nóbile<br><strong>Benicio</strong></h3>
+          <p class="miembro-desc">Apoyo fundamental de la conducción. Garantiza que cada propuesta se lleve a cabo de manera efectiva y a tiempo.</p>
+          <div class="miembro-badge secondary">
+            <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 2l2.4 6.4H18l-4.8 3.6 1.8 6-5-3.6-5 3.6 1.8-6L2 8.4h5.6z"/></svg>
+            Vicepresidente
+          </div>
+        </div>
+      </article>
+
+      <!-- ENCARGADO -->
+      <article class="miembro-card" data-reveal data-delay="300">
+        <div class="miembro-logo-wrap" aria-hidden="true">
+          <svg class="miembro-shield-svg">
+            <use href="#logo-shield"/>
+          </svg>
+        </div>
+        <div class="miembro-info">
+          <div class="miembro-rol">Encargado</div>
+          <h3 class="miembro-nombre">Vetuschi<br><strong>Gabriel</strong></h3>
+          <p class="miembro-desc">Responsable de la coordinación y seguimiento de todas las actividades. El motor operativo de Legado Murialdino.</p>
+          <div class="miembro-badge tertiary">
+            <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 2l2.4 6.4H18l-4.8 3.6 1.8 6-5-3.6-5 3.6 1.8-6L2 8.4h5.6z"/></svg>
+            Coordinación General
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ══════════════ VALORES ══════════════ -->
+  <section class="valores section-pad" id="valores">
+    <div class="valores-wrap">
+      <div class="section-header" data-reveal>
+        <span class="section-tag">Lo que nos define</span>
+        <h2 class="section-title">Nuestros <em>Valores</em></h2>
+      </div>
+
+      <div class="valores-layout">
+        <div class="valor-item" data-reveal data-delay="0">
+          <div class="valor-number" aria-hidden="true">01</div>
+          <div class="valor-content">
+            <h3>Compromiso</h3>
+            <p>Asumimos con seriedad cada rol que se nos encomienda. El mandato estudiantil es sagrado y lo ejercemos con responsabilidad plena.</p>
+          </div>
+        </div>
+        <div class="valor-divider" aria-hidden="true"></div>
+        <div class="valor-item" data-reveal data-delay="100">
+          <div class="valor-number" aria-hidden="true">02</div>
+          <div class="valor-content">
+            <h3>Unidad</h3>
+            <p>Creemos que la fuerza del instituto reside en su comunidad. Promovemos el trabajo colectivo por sobre los intereses individuales.</p>
+          </div>
+        </div>
+        <div class="valor-divider" aria-hidden="true"></div>
+        <div class="valor-item" data-reveal data-delay="200">
+          <div class="valor-number" aria-hidden="true">03</div>
+          <div class="valor-content">
+            <h3>Respeto</h3>
+            <p>Cada estudiante merece ser escuchado y valorado. Defendemos un espacio libre de violencia, discriminación y exclusión.</p>
+          </div>
+        </div>
+        <div class="valor-divider" aria-hidden="true"></div>
+        <div class="valor-item" data-reveal data-delay="300">
+          <div class="valor-number" aria-hidden="true">04</div>
+          <div class="valor-content">
+            <h3>Transparencia</h3>
+            <p>Rendimos cuentas a quienes nos eligen. Cada decisión y cada acción son públicas y accesibles para toda la comunidad.</p>
+          </div>
+        </div>
+        <div class="valor-divider" aria-hidden="true"></div>
+        <div class="valor-item" data-reveal data-delay="400">
+          <div class="valor-number" aria-hidden="true">05</div>
+          <div class="valor-content">
+            <h3>Legado</h3>
+            <p>Trabajamos pensando en quienes vendrán. Cada decisión construye algo que trasciende nuestra gestión y queda para siempre en el instituto.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="valores-quote" data-reveal>
+        <div class="quote-line" aria-hidden="true"></div>
+        <blockquote>
+          <em>"Haud Mori"</em> — No morir. Un instituto vivo es un instituto que escucha, actúa y transforma.
+        </blockquote>
+        <div class="quote-line" aria-hidden="true"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════ STATS ══════════════ -->
+  <section class="stats-section" aria-label="Estadísticas">
+    <div class="stats-grid">
+      <div class="stat-item" data-reveal>
+        <div class="stat-number" data-target="7" data-suffix="">0</div>
+        <div class="stat-label">Propuestas Concretas</div>
+      </div>
+      <div class="stat-item" data-reveal data-delay="100">
+        <div class="stat-number" data-target="3" data-suffix="">0</div>
+        <div class="stat-label">Integrantes del Equipo</div>
+      </div>
+      <div class="stat-item" data-reveal data-delay="200">
+        <div class="stat-number" data-target="100" data-suffix="%">0</div>
+        <div class="stat-label">Transparencia</div>
+      </div>
+      <div class="stat-item" data-reveal data-delay="300">
+        <div class="stat-number" data-target="0" data-suffix="">0</div>
+        <div class="stat-label">Tolerancia al Bullying</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════ CONTACTO ══════════════ -->
+  <section class="contacto section-pad" id="contacto">
+    <div class="contacto-inner" data-reveal>
+      <!-- Logo unificado en contacto -->
+      <div class="contacto-logo" aria-hidden="true">
+        <svg class="contacto-shield-svg">
+          <use href="#logo-shield"/>
+        </svg>
+      </div>
+
+      <h2 class="contacto-title">¿Querés sumarte?</h2>
+      <p class="contacto-text">
+        Legado Murialdino es de todos. Si querés participar, proponer ideas o simplemente conocernos mejor, estamos para vos.
+      </p>
+
+      <!-- FORMULARIO DE CONTACTO FUNCIONAL -->
+      <form class="contacto-form" id="contactForm" novalidate>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="cf-nombre">Tu nombre</label>
+            <input type="text" id="cf-nombre" name="nombre" placeholder="Ej: Juan Pérez" autocomplete="name" required />
+            <span class="form-error" id="err-nombre"></span>
+          </div>
+          <div class="form-group">
+            <label for="cf-curso">Tu curso</label>
+            <input type="text" id="cf-curso" name="curso" placeholder="Ej: 3° A" required />
+            <span class="form-error" id="err-curso"></span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="cf-mensaje">Tu mensaje o propuesta</label>
+          <textarea id="cf-mensaje" name="mensaje" rows="4" placeholder="Contanos tu idea, pregunta o lo que quieras decirnos..." required></textarea>
+          <span class="form-error" id="err-mensaje"></span>
+        </div>
+        <button type="submit" class="btn btn-primary btn-full">
+          <span class="btn-text">Enviar mensaje</span>
+          <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+          </svg>
+        </button>
+      </form>
+
+      <div class="contacto-motto">
+        <span>Haud Mori</span>
+        <span class="dot">·</span>
+        <span>Instituto Murialdo</span>
+        <span class="dot">·</span>
+        <span>Centro de Estudiantes</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <svg class="footer-shield" aria-hidden="true"><use href="#logo-shield"/></svg>
+      <div class="footer-text">
+        <span>© 2025 Legado Murialdino</span>
+        <span class="footer-sep">·</span>
+        <span>Instituto Murialdo</span>
+        <span class="footer-sep">·</span>
+        <span>Todos los derechos reservados</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="main.js"></script>
+</body>
+</html>
+HTMLEOF
+echo "DONE"
