@@ -1,322 +1,464 @@
 /* ==========================================
-   ESPACIO MURIALDINO — main.js
+   LEGADO MURIALDINO — main.js
+   ==========================================
+
+   IMPORTANTE — EMAILJS SETUP:
+   Para que el formulario envíe emails a bautycortereal@gmail.com
+   necesitás configurar EmailJS (gratis):
+
+   1. Creá una cuenta en https://www.emailjs.com
+   2. Agregá un servicio de Gmail (conectá tu Gmail)
+   3. Creá un Email Template con estas variables:
+        {{nombre}}  {{apellido}}  {{telefono}}
+        {{email}}   {{mensaje}}   {{reply_to}}
+   4. Reemplazá los 3 valores de abajo con tus datos reales:
+        EMAILJS_SERVICE_ID  → tu Service ID (ej: "service_abc123")
+        EMAILJS_TEMPLATE_ID → tu Template ID (ej: "template_xyz456")
+        EMAILJS_PUBLIC_KEY  → tu Public Key (ej: "user_XXXXXXXXX")
+
+   Todo gratuito, sin backend, sin servidor.
+   Instrucciones detalladas: https://www.emailjs.com/docs/
    ========================================== */
+
+const EMAILJS_SERVICE_ID  = 'TU_SERVICE_ID';    // ← reemplazá
+const EMAILJS_TEMPLATE_ID = 'TU_TEMPLATE_ID';   // ← reemplazá
+const EMAILJS_PUBLIC_KEY  = 'TU_PUBLIC_KEY';     // ← reemplazá
 
 document.addEventListener('DOMContentLoaded', () => {
 
-  // ── CURSOR PERSONALIZADO ──────────────────
+  // ── INIT EMAILJS ──────────────────────────
+  if (typeof emailjs !== 'undefined') {
+    emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+  }
+
+  // ══════════════════════════════════════════
+  // CURSOR PERSONALIZADO
+  // ══════════════════════════════════════════
   const cursor         = document.getElementById('cursor');
   const cursorFollower = document.getElementById('cursorFollower');
   let mouseX = 0, mouseY = 0;
   let followerX = 0, followerY = 0;
+  let rafId;
 
   document.addEventListener('mousemove', (e) => {
     mouseX = e.clientX;
     mouseY = e.clientY;
     cursor.style.left = mouseX + 'px';
     cursor.style.top  = mouseY + 'px';
-  });
+  }, { passive: true });
 
-  // Follower suave con RAF
   function animateFollower() {
-    followerX += (mouseX - followerX) * 0.12;
-    followerY += (mouseY - followerY) * 0.12;
+    followerX += (mouseX - followerX) * 0.11;
+    followerY += (mouseY - followerY) * 0.11;
     cursorFollower.style.left = followerX + 'px';
     cursorFollower.style.top  = followerY + 'px';
-    requestAnimationFrame(animateFollower);
+    rafId = requestAnimationFrame(animateFollower);
   }
   animateFollower();
 
-  // Escalar cursor en hover de links/buttons
-  document.querySelectorAll('a, button').forEach(el => {
-    el.addEventListener('mouseenter', () => {
-      cursor.style.transform         = 'translate(-50%, -50%) scale(2)';
-      cursorFollower.style.transform = 'translate(-50%, -50%) scale(1.4)';
-      cursorFollower.style.opacity   = '0.3';
-    });
-    el.addEventListener('mouseleave', () => {
-      cursor.style.transform         = 'translate(-50%, -50%) scale(1)';
-      cursorFollower.style.transform = 'translate(-50%, -50%) scale(1)';
-      cursorFollower.style.opacity   = '0.6';
-    });
+  document.querySelectorAll('a, button, input, textarea').forEach(el => {
+    el.addEventListener('mouseenter', () => cursor.classList.add('hovering'));
+    el.addEventListener('mouseleave', () => cursor.classList.remove('hovering'));
   });
 
+  // Ocultar cursor al salir de la ventana
+  document.addEventListener('mouseleave', () => { cursor.style.opacity = '0'; cursorFollower.style.opacity = '0'; });
+  document.addEventListener('mouseenter', () => { cursor.style.opacity = '1'; cursorFollower.style.opacity = '1'; });
 
-  // ── PARTÍCULAS FLOTANTES ─────────────────
+
+  // ══════════════════════════════════════════
+  // PARTÍCULAS FLOTANTES
+  // ══════════════════════════════════════════
   const particlesContainer = document.getElementById('particles');
-  const PARTICLE_COUNT = 35;
+  const PARTICLE_COUNT = 30;
+  const COLORS = [
+    'rgba(240,192,16,0.75)',
+    'rgba(192,57,43,0.55)',
+    'rgba(90,130,240,0.45)',
+  ];
 
   for (let i = 0; i < PARTICLE_COUNT; i++) {
-    const p = document.createElement('div');
-    p.classList.add('particle');
-
-    // Posición y tamaño aleatorios
-    const size = Math.random() * 3 + 1;
-    p.style.cssText = `
-      left: ${Math.random() * 100}%;
-      width: ${size}px;
-      height: ${size}px;
-      animation-duration: ${Math.random() * 15 + 10}s;
-      animation-delay: ${Math.random() * 12}s;
-      opacity: ${Math.random() * 0.5 + 0.1};
-    `;
-
-    // Algunos son dorados, otros azulados
-    if (Math.random() > 0.6) {
-      p.style.background = 'rgba(240,192,16,0.8)';
-    } else if (Math.random() > 0.5) {
-      p.style.background = 'rgba(192,57,43,0.6)';
-    } else {
-      p.style.background = 'rgba(100,140,255,0.5)';
-    }
-
+    const p    = document.createElement('div');
+    const size = Math.random() * 2.8 + 1;
+    p.className = 'particle';
+    p.style.cssText = [
+      `left:${Math.random() * 100}%`,
+      `width:${size}px`,
+      `height:${size}px`,
+      `animation-duration:${Math.random() * 15 + 12}s`,
+      `animation-delay:${Math.random() * 14}s`,
+      `background:${COLORS[Math.floor(Math.random() * COLORS.length)]}`,
+    ].join(';');
     particlesContainer.appendChild(p);
   }
 
 
-  // ── NAVBAR SCROLL ────────────────────────
-  const navbar = document.getElementById('navbar');
+  // ══════════════════════════════════════════
+  // NAVBAR — scroll + active link
+  // ══════════════════════════════════════════
+  const navbar   = document.getElementById('navbar');
   const navLinks = document.querySelectorAll('.nav-link');
+  const sections = Array.from(document.querySelectorAll('section[id]'));
 
-  window.addEventListener('scroll', () => {
-    if (window.scrollY > 50) {
-      navbar.classList.add('scrolled');
-    } else {
-      navbar.classList.remove('scrolled');
-    }
-    highlightNav();
-  }, { passive: true });
+  function updateNavbar() {
+    // Fondo al hacer scroll
+    navbar.classList.toggle('scrolled', window.scrollY > 40);
 
-  // Active link en scroll
-  function highlightNav() {
-    const sections = document.querySelectorAll('section[id]');
-    const scrollY  = window.scrollY + 120;
-
-    sections.forEach(section => {
-      const top    = section.offsetTop;
-      const height = section.offsetHeight;
-      const id     = section.getAttribute('id');
-      const link   = document.querySelector(`.nav-link[href="#${id}"]`);
-
-      if (link) {
-        if (scrollY >= top && scrollY < top + height) {
-          link.style.color = 'var(--gold)';
-        } else {
-          link.style.color = '';
-        }
-      }
+    // Destacar link activo
+    const scrollMid = window.scrollY + window.innerHeight * 0.35;
+    let current = '';
+    sections.forEach(sec => {
+      if (scrollMid >= sec.offsetTop) current = sec.id;
+    });
+    navLinks.forEach(link => {
+      link.classList.toggle('active', link.getAttribute('href') === `#${current}`);
     });
   }
 
+  window.addEventListener('scroll', updateNavbar, { passive: true });
+  updateNavbar();
 
-  // ── HAMBURGER MENU ───────────────────────
+
+  // ══════════════════════════════════════════
+  // HAMBURGER MENU
+  // ══════════════════════════════════════════
   const hamburger = document.getElementById('hamburger');
   const navMenu   = document.getElementById('navLinks');
 
+  function closeMenu() {
+    navMenu.classList.remove('open');
+    hamburger.classList.remove('open');
+    hamburger.setAttribute('aria-expanded', 'false');
+  }
+
   hamburger.addEventListener('click', () => {
-    navMenu.classList.toggle('open');
-    const spans = hamburger.querySelectorAll('span');
-    if (navMenu.classList.contains('open')) {
-      spans[0].style.transform = 'rotate(45deg) translate(5px, 5px)';
-      spans[1].style.opacity   = '0';
-      spans[2].style.transform = 'rotate(-45deg) translate(5px, -5px)';
-    } else {
-      spans.forEach(s => { s.style.transform = ''; s.style.opacity = ''; });
-    }
+    const isOpen = navMenu.classList.toggle('open');
+    hamburger.classList.toggle('open', isOpen);
+    hamburger.setAttribute('aria-expanded', String(isOpen));
   });
 
-  navMenu.querySelectorAll('a').forEach(link => {
-    link.addEventListener('click', () => {
-      navMenu.classList.remove('open');
-      hamburger.querySelectorAll('span').forEach(s => { s.style.transform = ''; s.style.opacity = ''; });
+  navMenu.querySelectorAll('a').forEach(link => link.addEventListener('click', closeMenu));
+
+  // Cerrar al presionar Escape
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
+
+  // Cerrar al hacer click fuera
+  document.addEventListener('click', e => {
+    if (!navbar.contains(e.target)) closeMenu();
+  });
+
+
+  // ══════════════════════════════════════════
+  // SMOOTH SCROLL
+  // ══════════════════════════════════════════
+  document.querySelectorAll('a[href^="#"]').forEach(link => {
+    link.addEventListener('click', e => {
+      const target = document.querySelector(link.getAttribute('href'));
+      if (target) {
+        e.preventDefault();
+        window.scrollTo({
+          top: target.getBoundingClientRect().top + window.scrollY - 74,
+          behavior: 'smooth',
+        });
+      }
     });
   });
 
 
-  // ── SCROLL REVEAL ────────────────────────
-  const revealObserver = new IntersectionObserver((entries) => {
+  // ══════════════════════════════════════════
+  // SCROLL REVEAL (IntersectionObserver)
+  // ══════════════════════════════════════════
+  const revealObs = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
         entry.target.classList.add('revealed');
-        revealObserver.unobserve(entry.target);
+        revealObs.unobserve(entry.target);
       }
     });
-  }, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
+  }, { threshold: 0.08, rootMargin: '0px 0px -50px 0px' });
 
-  document.querySelectorAll('[data-reveal]').forEach(el => {
-    revealObserver.observe(el);
-  });
+  document.querySelectorAll('[data-reveal]').forEach(el => revealObs.observe(el));
 
 
-  // ── CONTADORES ANIMADOS ──────────────────
-  const counterObserver = new IntersectionObserver((entries) => {
+  // ══════════════════════════════════════════
+  // CONTADORES ANIMADOS
+  // ══════════════════════════════════════════
+  const counterObs = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        const el     = entry.target;
-        const target = parseInt(el.getAttribute('data-target'), 10);
-        animateCounter(el, 0, target, 1600);
-        counterObserver.unobserve(el);
+      if (!entry.isIntersecting) return;
+      const el     = entry.target;
+      const target = parseInt(el.dataset.target, 10);
+      const suffix = el.dataset.suffix || '';
+      const dur    = 1500;
+      const start  = performance.now();
+
+      function tick(now) {
+        const p = Math.min((now - start) / dur, 1);
+        const v = Math.round(target * (1 - Math.pow(1 - p, 4)));
+        el.textContent = v + suffix;
+        if (p < 1) requestAnimationFrame(tick);
       }
+      requestAnimationFrame(tick);
+      counterObs.unobserve(el);
     });
   }, { threshold: 0.5 });
 
-  document.querySelectorAll('.stat-number[data-target]').forEach(el => {
-    counterObserver.observe(el);
-  });
-
-  function animateCounter(el, start, end, duration) {
-    const startTime = performance.now();
-    const suffix    = el.getAttribute('data-suffix') || '';
-
-    function update(currentTime) {
-      const elapsed  = currentTime - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      // Easing out quart
-      const eased    = 1 - Math.pow(1 - progress, 4);
-      const value    = Math.round(start + (end - start) * eased);
-
-      el.textContent = value + suffix;
-      if (progress < 1) requestAnimationFrame(update);
-    }
-    requestAnimationFrame(update);
-  }
+  document.querySelectorAll('.stat-number[data-target]').forEach(el => counterObs.observe(el));
 
 
-  // ── PARALLAX HERO SHAPES ─────────────────
+  // ══════════════════════════════════════════
+  // PARALLAX SHAPES EN HERO
+  // ══════════════════════════════════════════
   const shapes = document.querySelectorAll('.shape');
-
   window.addEventListener('scroll', () => {
-    const scrollY = window.scrollY;
-    shapes.forEach((shape, i) => {
-      const speed = 0.05 + i * 0.03;
-      shape.style.transform = `translateY(${scrollY * speed}px)`;
-    });
+    const sy = window.scrollY;
+    shapes.forEach((s, i) => { s.style.transform = `translateY(${sy * (0.04 + i * 0.025)}px)`; });
   }, { passive: true });
 
 
-  // ── TILT EN CARDS DE EQUIPO ──────────────
+  // ══════════════════════════════════════════
+  // TILT 3D EN TARJETAS DE EQUIPO
+  // ══════════════════════════════════════════
   document.querySelectorAll('.miembro-card').forEach(card => {
-    card.addEventListener('mousemove', (e) => {
-      const rect   = card.getBoundingClientRect();
-      const x      = (e.clientX - rect.left) / rect.width  - 0.5;
-      const y      = (e.clientY - rect.top)  / rect.height - 0.5;
-      const tiltX  = y * -10;
-      const tiltY  = x *  10;
-      card.style.transform = `translateY(-8px) rotateX(${tiltX}deg) rotateY(${tiltY}deg)`;
+    card.addEventListener('mousemove', e => {
+      const r  = card.getBoundingClientRect();
+      const x  = (e.clientX - r.left) / r.width  - 0.5;
+      const y  = (e.clientY - r.top)  / r.height - 0.5;
+      card.style.transition = 'transform .08s ease';
+      card.style.transform  = `translateY(-8px) rotateX(${y * -9}deg) rotateY(${x * 9}deg)`;
     });
     card.addEventListener('mouseleave', () => {
-      card.style.transform = '';
-      card.style.transition = 'transform 0.5s ease';
-    });
-    card.addEventListener('mouseenter', () => {
-      card.style.transition = 'transform 0.1s ease';
+      card.style.transition = 'transform .5s ease';
+      card.style.transform  = '';
     });
   });
 
 
-  // ── HOVER GLOW EN PROPUESTAS ─────────────
+  // ══════════════════════════════════════════
+  // GLOW RADIAL EN CARDS DE PROPUESTAS
+  // ══════════════════════════════════════════
   document.querySelectorAll('.propuesta-card').forEach(card => {
-    card.addEventListener('mousemove', (e) => {
-      const rect  = card.getBoundingClientRect();
-      const x     = e.clientX - rect.left;
-      const y     = e.clientY - rect.top;
-      card.style.background = `
-        radial-gradient(circle at ${x}px ${y}px,
-          rgba(240,192,16,0.06) 0%,
-          rgba(26,58,140,0.15) 50%,
-          rgba(15,37,102,0.3) 100%)
-      `;
+    card.addEventListener('mousemove', e => {
+      const r = card.getBoundingClientRect();
+      const x = e.clientX - r.left, y = e.clientY - r.top;
+      card.style.background = `radial-gradient(circle at ${x}px ${y}px, rgba(240,192,16,.07) 0%, rgba(26,58,140,.14) 45%, rgba(7,16,30,.7) 100%)`;
     });
-    card.addEventListener('mouseleave', () => {
-      card.style.background = '';
-    });
+    card.addEventListener('mouseleave', () => { card.style.background = ''; });
   });
 
 
-  // ── SMOOTH SCROLL CON EASING ─────────────
-  document.querySelectorAll('a[href^="#"]').forEach(link => {
-    link.addEventListener('click', (e) => {
-      const href   = link.getAttribute('href');
-      const target = document.querySelector(href);
-      if (target) {
-        e.preventDefault();
-        const top = target.getBoundingClientRect().top + window.scrollY - 80;
-        window.scrollTo({ top, behavior: 'smooth' });
-      }
+  // ══════════════════════════════════════════
+  // RIPPLE EN BOTONES
+  // ══════════════════════════════════════════
+  document.querySelectorAll('.btn').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+      const r      = this.getBoundingClientRect();
+      const span   = document.createElement('span');
+      span.className = 'ripple';
+      span.style.cssText = `left:${e.clientX - r.left}px;top:${e.clientY - r.top}px`;
+      this.appendChild(span);
+      setTimeout(() => span.remove(), 600);
     });
   });
 
-
-  // ── TEXTO TITLE: EFECTO TYPING SUTIL ─────
-  const titleLines = document.querySelectorAll('.title-line');
-  titleLines.forEach((line, i) => {
-    setTimeout(() => {
-      line.style.opacity = '1';
-      line.style.transform = 'translateY(0)';
-    }, 350 + i * 200);
-  });
-
-
-  // ── EFECTO GLITCH EN LOGO HERO ───────────
-  const heroLogo = document.querySelector('.main-logo-svg');
-  if (heroLogo) {
-    setInterval(() => {
-      if (Math.random() > 0.92) {
-        heroLogo.style.filter = 'drop-shadow(0 20px 40px rgba(240,192,16,0.6)) hue-rotate(15deg)';
-        setTimeout(() => {
-          heroLogo.style.filter = 'drop-shadow(0 20px 40px rgba(240,192,16,0.25))';
-        }, 80);
-      }
-    }, 3000);
+  // Inyectar keyframe ripple una sola vez
+  if (!document.getElementById('rippleStyle')) {
+    const s = document.createElement('style');
+    s.id = 'rippleStyle';
+    s.textContent = `.ripple{position:absolute;border-radius:50%;background:rgba(255,255,255,.22);width:10px;height:10px;margin-left:-5px;margin-top:-5px;transform:scale(0);animation:rippleKF .55s ease-out forwards;pointer-events:none}@keyframes rippleKF{to{transform:scale(22);opacity:0}}`;
+    document.head.appendChild(s);
   }
 
 
-  // ── RIPPLE EN BOTONES ────────────────────
-  document.querySelectorAll('.btn').forEach(btn => {
-    btn.addEventListener('click', function(e) {
-      const ripple = document.createElement('span');
-      const rect   = this.getBoundingClientRect();
-      const x      = e.clientX - rect.left;
-      const y      = e.clientY - rect.top;
+  // ══════════════════════════════════════════
+  // BOTÓN VOLVER ARRIBA
+  // ══════════════════════════════════════════
+  const backToTop = document.getElementById('backToTop');
+  window.addEventListener('scroll', () => {
+    backToTop.classList.toggle('visible', window.scrollY > 400);
+  }, { passive: true });
+  backToTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 
-      ripple.style.cssText = `
-        position: absolute;
-        left: ${x}px; top: ${y}px;
-        width: 0; height: 0;
-        border-radius: 50%;
-        background: rgba(255,255,255,0.25);
-        transform: translate(-50%, -50%);
-        animation: rippleAnim 0.6s ease-out forwards;
-        pointer-events: none;
-      `;
-      this.style.position = 'relative';
-      this.style.overflow  = 'hidden';
-      this.appendChild(ripple);
-      setTimeout(() => ripple.remove(), 600);
-    });
-  });
 
-  // Inyectar keyframe de ripple
-  const style = document.createElement('style');
-  style.textContent = `
-    @keyframes rippleAnim {
-      to { width: 200px; height: 200px; opacity: 0; }
+  // ══════════════════════════════════════════
+  // ANIMACIÓN LOGO HERO (glitch sutil)
+  // ══════════════════════════════════════════
+  const heroImg = document.querySelector('.main-logo-img');
+  if (heroImg) {
+    setInterval(() => {
+      if (Math.random() > 0.93) {
+        heroImg.style.filter = 'drop-shadow(0 16px 40px rgba(240,192,16,.65)) hue-rotate(12deg) brightness(1.1)';
+        setTimeout(() => {
+          heroImg.style.filter = 'drop-shadow(0 16px 40px rgba(240,192,16,.32))';
+        }, 90);
+      }
+    }, 2800);
+  }
+
+
+  // ══════════════════════════════════════════
+  // TOAST HELPER
+  // ══════════════════════════════════════════
+  const toastEl = document.getElementById('toast');
+  let toastTimer;
+
+  function showToast(msg, type = 'info', duration = 4000) {
+    clearTimeout(toastTimer);
+    toastEl.textContent  = msg;
+    toastEl.className    = `toast show ${type}`;
+    toastTimer = setTimeout(() => { toastEl.classList.remove('show'); }, duration);
+  }
+
+
+  // ══════════════════════════════════════════
+  // FORMULARIO DE CONTACTO — VALIDACIÓN + EMAILJS
+  // ══════════════════════════════════════════
+  const form      = document.getElementById('contactForm');
+  const submitBtn = document.getElementById('submitBtn');
+  const btnText   = submitBtn.querySelector('.btn-text');
+  const btnLoader = document.getElementById('btnLoader');
+
+  // Campos y sus reglas
+  const fields = {
+    'cf-nombre':   { required: true,  minLen: 2, label: 'Nombre',          errId: 'err-nombre' },
+    'cf-apellido': { required: true,  minLen: 2, label: 'Apellido',         errId: 'err-apellido' },
+    'cf-telefono': { required: true,  type: 'tel', label: 'Teléfono',       errId: 'err-telefono' },
+    'cf-email':    { required: false, type: 'email', label: 'Gmail',        errId: 'err-email' },
+    'cf-mensaje':  { required: true,  minLen: 10, label: 'Mensaje',         errId: 'err-mensaje' },
+  };
+
+  // Validar un campo individual
+  function validateField(id) {
+    const cfg = fields[id];
+    if (!cfg) return true;
+    const el  = document.getElementById(id);
+    const err = document.getElementById(cfg.errId);
+    const val = el.value.trim();
+
+    el.classList.remove('invalid', 'valid');
+    err.textContent = '';
+
+    // Obligatorio vacío
+    if (cfg.required && val === '') {
+      el.classList.add('invalid');
+      err.textContent = `${cfg.label} es obligatorio.`;
+      return false;
     }
-  `;
-  document.head.appendChild(style);
+    // Opcional vacío → ok
+    if (!cfg.required && val === '') { return true; }
 
+    // Longitud mínima
+    if (cfg.minLen && val.length < cfg.minLen) {
+      el.classList.add('invalid');
+      err.textContent = `Ingresá al menos ${cfg.minLen} caracteres.`;
+      return false;
+    }
 
-  // ── NAVBAR LINK HOVER UNDERLINE ANIMADO ──
-  navLinks.forEach(link => {
-    link.addEventListener('mouseenter', function() {
-      this.style.letterSpacing = '2.5px';
-    });
-    link.addEventListener('mouseleave', function() {
-      this.style.letterSpacing = '';
+    // Teléfono: solo números, espacios, guiones, + ()
+    if (cfg.type === 'tel') {
+      const telClean = val.replace(/[\s\-\(\)\+]/g, '');
+      if (!/^\d{6,15}$/.test(telClean)) {
+        el.classList.add('invalid');
+        err.textContent = 'Ingresá un número de teléfono válido.';
+        return false;
+      }
+    }
+
+    // Email
+    if (cfg.type === 'email') {
+      const emailRx = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRx.test(val)) {
+        el.classList.add('invalid');
+        err.textContent = 'Ingresá un correo electrónico válido.';
+        return false;
+      }
+    }
+
+    el.classList.add('valid');
+    return true;
+  }
+
+  // Validar en tiempo real al salir de cada campo
+  Object.keys(fields).forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('blur',  () => validateField(id));
+    el.addEventListener('input', () => {
+      if (el.classList.contains('invalid')) validateField(id);
     });
   });
 
-  console.log('%c⚜ ESPACIO MURIALDINO ⚜', 'color: #f0c010; font-size: 18px; font-weight: bold; font-family: Georgia, serif;');
-  console.log('%cHaud Mori — Centro de Estudiantes', 'color: #8899cc; font-size: 12px;');
+  // SUBMIT
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    // Validar todos los campos
+    let allValid = true;
+    Object.keys(fields).forEach(id => { if (!validateField(id)) allValid = false; });
+    if (!allValid) {
+      showToast('⚠ Revisá los campos marcados en rojo.', 'error');
+      // Hacer foco en el primer campo inválido
+      const first = form.querySelector('.invalid');
+      if (first) first.focus();
+      return;
+    }
+
+    // Verificar que EmailJS esté configurado
+    if (EMAILJS_SERVICE_ID === 'TU_SERVICE_ID') {
+      showToast('⚠ Configurá EmailJS en main.js para habilitar el envío.', 'error', 6000);
+      return;
+    }
+
+    // Estado de carga
+    submitBtn.disabled  = true;
+    btnText.textContent = 'Enviando…';
+    btnLoader.classList.add('show');
+
+    const nombre   = document.getElementById('cf-nombre').value.trim();
+    const apellido = document.getElementById('cf-apellido').value.trim();
+    const telefono = document.getElementById('cf-telefono').value.trim();
+    const email    = document.getElementById('cf-email').value.trim();
+    const mensaje  = document.getElementById('cf-mensaje').value.trim();
+
+    const templateParams = {
+      nombre,
+      apellido,
+      nombre_completo: `${nombre} ${apellido}`,
+      telefono,
+      email:    email || '(no proporcionado)',
+      reply_to: email || 'sin-email@legadomurialdino.com',
+      mensaje,
+      fecha:    new Date().toLocaleDateString('es-AR', { day:'2-digit', month:'long', year:'numeric' }),
+    };
+
+    try {
+      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams);
+
+      // Éxito
+      showToast('✔ ¡Mensaje enviado! Te respondemos pronto.', 'success', 5000);
+      form.reset();
+      // Limpiar clases de validación
+      Object.keys(fields).forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.remove('valid', 'invalid');
+      });
+
+    } catch (err) {
+      console.error('EmailJS error:', err);
+      showToast('✖ No se pudo enviar. Intentá de nuevo más tarde.', 'error', 5000);
+    } finally {
+      submitBtn.disabled  = false;
+      btnText.textContent = 'Enviar mensaje';
+      btnLoader.classList.remove('show');
+    }
+  });
+
+
+  // ══════════════════════════════════════════
+  // CONSOLE BRAND
+  // ══════════════════════════════════════════
+  console.log('%c⚜ LEGADO MURIALDINO ⚜', 'color:#f0c010;font-size:20px;font-weight:bold;font-family:Georgia,serif;text-shadow:0 0 8px #f0c010');
+  console.log('%cHaud Mori — Centro de Estudiantes · Instituto Murialdo', 'color:#8899cc;font-size:12px;');
+  console.log('%c🏫 bautycortereal@gmail.com', 'color:#aaa;font-size:11px;');
 
 });
