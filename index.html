@@ -9,115 +9,10 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Raleway:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet" />
+  <!-- EmailJS — envío de formulario sin backend -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 </head>
 <body>
-
-  <!-- =============================================
-       LOGO ÚNICO COMO SVG SYMBOL — se reutiliza
-       con <use href="#logo-shield"> en toda la web
-       ============================================= -->
-  <svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
-    <defs>
-      <!-- Gradientes globales -->
-      <linearGradient id="gBlue" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stop-color="#2550c0"/>
-        <stop offset="100%" stop-color="#0f2566"/>
-      </linearGradient>
-      <linearGradient id="gRed" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stop-color="#d94040"/>
-        <stop offset="100%" stop-color="#8b0000"/>
-      </linearGradient>
-      <filter id="fGlow" x="-30%" y="-30%" width="160%" height="160%">
-        <feGaussianBlur stdDeviation="2.5" result="blur"/>
-        <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-      </filter>
-      <filter id="fShadow" x="-20%" y="-20%" width="140%" height="140%">
-        <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000" flood-opacity="0.5"/>
-      </filter>
-
-      <!-- ══════════════════════════════════
-           ESCUDO — viewBox 0 0 100 115
-           Este es el único logo del grupo.
-           Basado en el escudo del instituto:
-           azul | banda dorada diagonal | rojo
-           estrella 5p | estrella 7p | flor-de-lis x2
-           cinta HAUD MORI
-           ══════════════════════════════════ -->
-      <symbol id="logo-shield" viewBox="0 0 100 115" xmlns="http://www.w3.org/2000/svg">
-        <g filter="url(#fShadow)">
-          <!-- Cuerpo azul del escudo -->
-          <path d="M5 4 H95 V78 Q50 102 5 78 Z" fill="url(#gBlue)"/>
-
-          <!-- Banda diagonal dorada (de esquina sup-izq a esq inf-der) -->
-          <polygon points="5,4 27,4 95,58 95,72 73,72 5,18" fill="#f0c010"/>
-
-          <!-- Área roja (triángulo sup-der) -->
-          <polygon points="27,4 95,4 95,58 73,72" fill="url(#gRed)"/>
-
-          <!-- Borde exterior dorado -->
-          <path d="M5 4 H95 V78 Q50 102 5 78 Z" fill="none" stroke="#f0c010" stroke-width="2"/>
-          <!-- Filo interior blanco sutil -->
-          <path d="M9 8 H91 V75 Q50 97 9 75 Z" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
-
-          <!-- FLOR DE LIS 1 — área roja, arriba -->
-          <g transform="translate(71,22)" fill="#f0c010" filter="url(#fGlow)">
-            <path d="M0-10 C-1.5-7-3-4-1.2-2 C-3-0.5-5,2-3,4 C-1.5,6 0,4.5 0,4.5 C0,4.5 1.5,6 3,4 C5,2 3,-0.5 1.2,-2 C3,-4 1.5,-7 0,-10Z"/>
-            <rect x="-2.5" y="4" width="5" height="2.5" rx="0.8"/>
-            <path d="M-5.5,-1 C-7,0.5-6.5,3.5-4,3.5 C-2.5,3.5-2,2-2,2Z"/>
-            <path d="M5.5,-1 C7,0.5 6.5,3.5 4,3.5 C2.5,3.5 2,2 2,2Z"/>
-            <rect x="-4" y="6.5" width="8" height="1.5" rx="0.8"/>
-          </g>
-
-          <!-- FLOR DE LIS 2 — área roja, abajo -->
-          <g transform="translate(82,42) scale(0.82)" fill="#f0c010" filter="url(#fGlow)">
-            <path d="M0-10 C-1.5-7-3-4-1.2-2 C-3-0.5-5,2-3,4 C-1.5,6 0,4.5 0,4.5 C0,4.5 1.5,6 3,4 C5,2 3,-0.5 1.2,-2 C3,-4 1.5,-7 0,-10Z"/>
-            <rect x="-2.5" y="4" width="5" height="2.5" rx="0.8"/>
-            <path d="M-5.5,-1 C-7,0.5-6.5,3.5-4,3.5 C-2.5,3.5-2,2-2,2Z"/>
-            <path d="M5.5,-1 C7,0.5 6.5,3.5 4,3.5 C2.5,3.5 2,2 2,2Z"/>
-            <rect x="-4" y="6.5" width="8" height="1.5" rx="0.8"/>
-          </g>
-
-          <!-- ESTRELLA 5 PUNTAS — área azul superior izq -->
-          <polygon
-            points="22,38 24.4,31 26.8,38 34,38 28.2,42.4 30.6,49.4 22,44.2 15.4,49.4 17.8,42.4 12,38"
-            fill="white" filter="url(#fGlow)"/>
-
-          <!-- ESTRELLA 7 PUNTAS — área azul inferior izq -->
-          <g transform="translate(28,68)" fill="white" filter="url(#fGlow)">
-            <polygon points="
-              0,-11
-              2.67,-3.54  10.46,-3.54
-              4.33,1.35   7,9.11
-              0,4.76     -7,9.11
-             -4.33,1.35 -10.46,-3.54
-             -2.67,-3.54
-            "/>
-          </g>
-        </g>
-
-        <!-- CINTA "HAUD MORI" -->
-        <g transform="translate(50,107)">
-          <!-- Alas izquierda y derecha -->
-          <path d="M-45,-5 L-42,0 L-45,5 L-48,0 Z" fill="#b8cce0"/>
-          <path d="M45,-5 L42,0 L45,5 L48,0 Z" fill="#b8cce0"/>
-          <!-- Cuerpo cinta -->
-          <rect x="-42" y="-6" width="84" height="12" rx="2" fill="#ddeeff" stroke="#8899bb" stroke-width="0.7"/>
-          <!-- Pliegue izquierdo -->
-          <rect x="-48" y="-5" width="10" height="10" rx="1.5" fill="#c8d8ee" stroke="#8899bb" stroke-width="0.7"/>
-          <!-- Pliegue derecho -->
-          <rect x="38" y="-5" width="10" height="10" rx="1.5" fill="#c8d8ee" stroke="#8899bb" stroke-width="0.7"/>
-          <text x="0" y="4.5" text-anchor="middle"
-                font-family="Cinzel, serif" font-size="6" font-weight="700"
-                fill="#1a3a8c" letter-spacing="3">HAUD MORI</text>
-        </g>
-      </symbol>
-
-      <!-- VERSION NAVBAR: solo escudo sin cinta ni texto, viewBox recortado -->
-      <symbol id="logo-shield-sm" viewBox="0 0 100 90" xmlns="http://www.w3.org/2000/svg">
-        <use href="#logo-shield"/>
-      </symbol>
-    </defs>
-  </svg>
 
   <!-- CURSOR -->
   <div class="cursor" id="cursor"></div>
@@ -126,7 +21,7 @@
   <!-- PARTÍCULAS -->
   <div class="particles" id="particles"></div>
 
-  <!-- TOAST NOTIFICACIÓN -->
+  <!-- TOAST -->
   <div class="toast" id="toast" role="alert" aria-live="polite"></div>
 
   <!-- BOTÓN VOLVER ARRIBA -->
@@ -136,13 +31,12 @@
     </svg>
   </button>
 
-  <!-- ══════════════ NAVBAR ══════════════ -->
+  <!-- ══════════════════════════════════════
+       NAVBAR
+       ══════════════════════════════════════ -->
   <nav class="navbar" id="navbar">
     <a href="#inicio" class="nav-logo" aria-label="Legado Murialdino - Inicio">
-      <!-- Logo unificado pequeño en navbar -->
-      <svg class="logo-nav-svg" aria-hidden="true">
-        <use href="#logo-shield"/>
-      </svg>
+      <img src="logosinfondo.png" alt="Logo Legado Murialdino" class="logo-nav-img" />
       <span class="nav-brand">
         <span class="nav-brand-top">Legado</span>
         <span class="nav-brand-bot">Murialdino</span>
@@ -150,20 +44,22 @@
     </a>
 
     <ul class="nav-links" id="navLinks" role="navigation" aria-label="Menú principal">
-      <li><a href="#inicio"      class="nav-link" data-section="inicio">Inicio</a></li>
-      <li><a href="#propuestas"  class="nav-link" data-section="propuestas">Propuestas</a></li>
-      <li><a href="#antibullying" class="nav-link" data-section="antibullying">Anti-bullying</a></li>
-      <li><a href="#equipo"      class="nav-link" data-section="equipo">Equipo</a></li>
-      <li><a href="#valores"     class="nav-link" data-section="valores">Valores</a></li>
-      <li><a href="#contacto"    class="nav-link" data-section="contacto">Contacto</a></li>
+      <li><a href="#inicio"       class="nav-link">Inicio</a></li>
+      <li><a href="#propuestas"   class="nav-link">Propuestas</a></li>
+      <li><a href="#antibullying" class="nav-link">Anti-bullying</a></li>
+      <li><a href="#equipo"       class="nav-link">Equipo</a></li>
+      <li><a href="#valores"      class="nav-link">Valores</a></li>
+      <li><a href="#contacto"     class="nav-link">Contacto</a></li>
     </ul>
 
-    <button class="hamburger" id="hamburger" aria-label="Abrir menú" aria-expanded="false" aria-controls="navLinks">
+    <button class="hamburger" id="hamburger" aria-label="Abrir menú" aria-expanded="false">
       <span></span><span></span><span></span>
     </button>
   </nav>
 
-  <!-- ══════════════ HERO ══════════════ -->
+  <!-- ══════════════════════════════════════
+       HERO
+       ══════════════════════════════════════ -->
   <section class="hero" id="inicio" aria-label="Inicio">
     <div class="hero-bg-shapes" aria-hidden="true">
       <div class="shape shape-1"></div>
@@ -172,11 +68,14 @@
     </div>
 
     <div class="hero-content">
-      <!-- LOGO HERO — mismo symbol, grande -->
+      <!-- LOGO REAL — imagen PNG sin fondo -->
       <div class="hero-logo" data-reveal>
-        <svg class="main-logo-svg" aria-label="Escudo de Legado Murialdino">
-          <use href="#logo-shield"/>
-        </svg>
+        <img
+          src="logosinfondo.png"
+          alt="Logo Legado Murialdino"
+          class="main-logo-img"
+          draggable="false"
+        />
       </div>
 
       <div class="hero-text">
@@ -190,8 +89,8 @@
           Con voz, compromiso y acción real.
         </p>
         <div class="hero-cta" data-reveal data-delay="460">
-          <a href="#propuestas"   class="btn btn-primary">Nuestras Propuestas</a>
-          <a href="#equipo"       class="btn btn-outline">Conocé al Equipo</a>
+          <a href="#propuestas"    class="btn btn-primary">Nuestras Propuestas</a>
+          <a href="#equipo"        class="btn btn-outline">Conocé al Equipo</a>
         </div>
         <div class="hero-divider" data-reveal data-delay="560">
           <span></span><span class="latin-motto">Haud Mori</span><span></span>
@@ -205,7 +104,9 @@
     </div>
   </section>
 
-  <!-- ══════════════ PROPUESTAS ══════════════ -->
+  <!-- ══════════════════════════════════════
+       PROPUESTAS
+       ══════════════════════════════════════ -->
   <section class="propuestas section-pad" id="propuestas">
     <div class="section-header" data-reveal>
       <span class="section-tag">¿Qué vamos a hacer?</span>
@@ -235,7 +136,7 @@
 
       <article class="propuesta-card" data-reveal data-delay="160">
         <div class="card-icon" aria-hidden="true">
-          <svg viewBox="0 0 48 48" fill="none"><circle cx="24" cy="20" r="12" stroke="currentColor" stroke-width="2"/><path d="M12 40c0-6.627 5.373-12 12-12s12 5.373 12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          <svg viewBox="0 0 48 48" fill="none"><circle cx="20" cy="18" r="9" stroke="currentColor" stroke-width="2"/><circle cx="32" cy="26" r="9" stroke="currentColor" stroke-width="2"/><path d="M27 12c2 2 4 6 2 10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
         </div>
         <h3>Apoyo Entre Pares</h3>
         <p>Sistema de tutorías donde estudiantes de años superiores acompañan a quienes tienen dificultades académicas o de adaptación.</p>
@@ -262,7 +163,7 @@
 
       <article class="propuesta-card" data-reveal data-delay="400">
         <div class="card-icon" aria-hidden="true">
-          <svg viewBox="0 0 48 48" fill="none"><path d="M6 42l9-9m0 0l8-8m-8 8l-4-4m12-4l9-9m0 0c2-2 6-2 8 0s2 6 0 8" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><circle cx="34" cy="14" r="6" stroke="currentColor" stroke-width="2"/></svg>
+          <svg viewBox="0 0 48 48" fill="none"><path d="M10 38l8-8m0 0l6-6m-6 6l-4-4m10-2l8-8m0 0c2-2 6-2 8 0s2 6 0 8" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><circle cx="34" cy="14" r="5" stroke="currentColor" stroke-width="2"/></svg>
         </div>
         <h3>Buzón de Ideas</h3>
         <p>Canal permanente (físico y digital) para que cualquier estudiante proponga mejoras, de forma anónima si lo desea.</p>
@@ -272,7 +173,9 @@
     </div>
   </section>
 
-  <!-- ══════════════ ANTI-BULLYING ══════════════ -->
+  <!-- ══════════════════════════════════════
+       ANTI-BULLYING
+       ══════════════════════════════════════ -->
   <section class="antibullying section-pad" id="antibullying">
     <div class="ab-inner">
       <div class="ab-text" data-reveal>
@@ -283,29 +186,29 @@
         </p>
 
         <div class="ab-acciones">
-          <div class="ab-accion" data-reveal data-delay="100">
-            <div class="ab-num">01</div>
+          <div class="ab-accion" data-reveal data-delay="80">
+            <div class="ab-num" aria-hidden="true">01</div>
             <div>
               <h4>Canal de denuncia anónima</h4>
               <p>Implementar un buzón físico y un formulario digital donde cualquier estudiante pueda reportar situaciones de acoso de forma confidencial, con seguimiento garantizado.</p>
             </div>
           </div>
-          <div class="ab-accion" data-reveal data-delay="200">
-            <div class="ab-num">02</div>
+          <div class="ab-accion" data-reveal data-delay="160">
+            <div class="ab-num" aria-hidden="true">02</div>
             <div>
               <h4>Capacitación docente y estudiantil</h4>
               <p>Jornadas anuales para aprender a identificar, prevenir e intervenir ante situaciones de bullying, tanto físico como verbal y digital (ciberbullying).</p>
             </div>
           </div>
-          <div class="ab-accion" data-reveal data-delay="300">
-            <div class="ab-num">03</div>
+          <div class="ab-accion" data-reveal data-delay="240">
+            <div class="ab-num" aria-hidden="true">03</div>
             <div>
               <h4>Red de compañeros guardianes</h4>
               <p>Grupo de estudiantes voluntarios capacitados para acompañar a víctimas, mediar conflictos y actuar como primer eslabón de contención.</p>
             </div>
           </div>
-          <div class="ab-accion" data-reveal data-delay="400">
-            <div class="ab-num">04</div>
+          <div class="ab-accion" data-reveal data-delay="320">
+            <div class="ab-num" aria-hidden="true">04</div>
             <div>
               <h4>Protocolo claro de actuación</h4>
               <p>Exigir a las autoridades del instituto un protocolo escrito, público y efectivo para cada situación de acoso, con plazos y responsables definidos.</p>
@@ -321,13 +224,10 @@
           <div class="ab-circle ab-c3"></div>
           <div class="ab-icon-center">
             <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <!-- Escudo protector -->
-              <path d="M40 8 L66 20 V44 C66 58 40 72 40 72 C40 72 14 58 14 44 V20 Z" fill="rgba(26,58,140,0.6)" stroke="#f0c010" stroke-width="2"/>
-              <!-- Paloma / símbolo paz -->
-              <path d="M40 30 C36 30 32 34 34 38 C36 42 40 42 40 48 C40 42 44 42 46 38 C48 34 44 30 40 30Z" fill="#f0c010"/>
-              <path d="M34 36 C30 34 26 36 28 40" stroke="#f0c010" stroke-width="1.5" stroke-linecap="round"/>
-              <path d="M46 36 C50 34 54 36 52 40" stroke="#f0c010" stroke-width="1.5" stroke-linecap="round"/>
-              <!-- Tachado de puño (NO bullying) -->
+              <path d="M40 8 L66 20 V44 C66 58 40 72 40 72 C40 72 14 58 14 44 V20 Z" fill="rgba(26,58,140,0.55)" stroke="#f0c010" stroke-width="2"/>
+              <path d="M40 28 C36 28 32 32 34 36 C36 40 40 40 40 46 C40 40 44 40 46 36 C48 32 44 28 40 28Z" fill="#f0c010"/>
+              <path d="M34 34 C30 32 26 34 28 38" stroke="#f0c010" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M46 34 C50 32 54 34 52 38" stroke="#f0c010" stroke-width="1.5" stroke-linecap="round"/>
               <circle cx="59" cy="59" r="14" fill="#c0392b" stroke="white" stroke-width="1.5"/>
               <path d="M51 67 L67 51" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
               <path d="M55 55 C55 53 57 51 59 51 C61 51 63 53 63 55 L63 60 L55 60 Z" fill="white"/>
@@ -344,7 +244,9 @@
     </div>
   </section>
 
-  <!-- ══════════════ EQUIPO ══════════════ -->
+  <!-- ══════════════════════════════════════
+       EQUIPO
+       ══════════════════════════════════════ -->
   <section class="equipo section-pad" id="equipo">
     <div class="equipo-bg" aria-hidden="true"></div>
     <div class="section-header" data-reveal>
@@ -357,11 +259,9 @@
 
       <!-- PRESIDENTE -->
       <article class="miembro-card featured" data-reveal data-delay="0">
-        <div class="miembro-logo-wrap" aria-hidden="true">
-          <!-- MISMO logo-shield en todas las tarjetas -->
-          <svg class="miembro-shield-svg">
-            <use href="#logo-shield"/>
-          </svg>
+        <div class="miembro-logo-wrap">
+          <!-- Logo real PNG sin fondo, igual en las 3 tarjetas -->
+          <img src="logosinfondo.png" alt="Logo Legado Murialdino" class="miembro-logo-img" />
         </div>
         <div class="miembro-info">
           <div class="miembro-rol">Presidente</div>
@@ -376,10 +276,8 @@
 
       <!-- VICEPRESIDENTE -->
       <article class="miembro-card" data-reveal data-delay="150">
-        <div class="miembro-logo-wrap" aria-hidden="true">
-          <svg class="miembro-shield-svg">
-            <use href="#logo-shield"/>
-          </svg>
+        <div class="miembro-logo-wrap">
+          <img src="logosinfondo.png" alt="Logo Legado Murialdino" class="miembro-logo-img" />
         </div>
         <div class="miembro-info">
           <div class="miembro-rol">Vicepresidente</div>
@@ -394,10 +292,8 @@
 
       <!-- ENCARGADO -->
       <article class="miembro-card" data-reveal data-delay="300">
-        <div class="miembro-logo-wrap" aria-hidden="true">
-          <svg class="miembro-shield-svg">
-            <use href="#logo-shield"/>
-          </svg>
+        <div class="miembro-logo-wrap">
+          <img src="logosinfondo.png" alt="Logo Legado Murialdino" class="miembro-logo-img" />
         </div>
         <div class="miembro-info">
           <div class="miembro-rol">Encargado</div>
@@ -413,7 +309,9 @@
     </div>
   </section>
 
-  <!-- ══════════════ VALORES ══════════════ -->
+  <!-- ══════════════════════════════════════
+       VALORES
+       ══════════════════════════════════════ -->
   <section class="valores section-pad" id="valores">
     <div class="valores-wrap">
       <div class="section-header" data-reveal>
@@ -430,7 +328,7 @@
           </div>
         </div>
         <div class="valor-divider" aria-hidden="true"></div>
-        <div class="valor-item" data-reveal data-delay="100">
+        <div class="valor-item" data-reveal data-delay="80">
           <div class="valor-number" aria-hidden="true">02</div>
           <div class="valor-content">
             <h3>Unidad</h3>
@@ -438,7 +336,7 @@
           </div>
         </div>
         <div class="valor-divider" aria-hidden="true"></div>
-        <div class="valor-item" data-reveal data-delay="200">
+        <div class="valor-item" data-reveal data-delay="160">
           <div class="valor-number" aria-hidden="true">03</div>
           <div class="valor-content">
             <h3>Respeto</h3>
@@ -446,7 +344,7 @@
           </div>
         </div>
         <div class="valor-divider" aria-hidden="true"></div>
-        <div class="valor-item" data-reveal data-delay="300">
+        <div class="valor-item" data-reveal data-delay="240">
           <div class="valor-number" aria-hidden="true">04</div>
           <div class="valor-content">
             <h3>Transparencia</h3>
@@ -454,11 +352,11 @@
           </div>
         </div>
         <div class="valor-divider" aria-hidden="true"></div>
-        <div class="valor-item" data-reveal data-delay="400">
+        <div class="valor-item" data-reveal data-delay="320">
           <div class="valor-number" aria-hidden="true">05</div>
           <div class="valor-content">
             <h3>Legado</h3>
-            <p>Trabajamos pensando en quienes vendrán. Cada decisión construye algo que trasciende nuestra gestión y queda para siempre en el instituto.</p>
+            <p>Trabajamos pensando en quienes vendrán. Cada decisión construye algo que trasciende nuestra gestión y permanece en el instituto.</p>
           </div>
         </div>
       </div>
@@ -473,11 +371,13 @@
     </div>
   </section>
 
-  <!-- ══════════════ STATS ══════════════ -->
+  <!-- ══════════════════════════════════════
+       STATS
+       ══════════════════════════════════════ -->
   <section class="stats-section" aria-label="Estadísticas">
     <div class="stats-grid">
       <div class="stat-item" data-reveal>
-        <div class="stat-number" data-target="7" data-suffix="">0</div>
+        <div class="stat-number" data-target="6" data-suffix="">0</div>
         <div class="stat-label">Propuestas Concretas</div>
       </div>
       <div class="stat-item" data-reveal data-delay="100">
@@ -495,47 +395,112 @@
     </div>
   </section>
 
-  <!-- ══════════════ CONTACTO ══════════════ -->
+  <!-- ══════════════════════════════════════
+       CONTACTO
+       ══════════════════════════════════════ -->
   <section class="contacto section-pad" id="contacto">
     <div class="contacto-inner" data-reveal>
-      <!-- Logo unificado en contacto -->
+
       <div class="contacto-logo" aria-hidden="true">
-        <svg class="contacto-shield-svg">
-          <use href="#logo-shield"/>
-        </svg>
+        <img src="logoconfondo.png" alt="Logo Legado Murialdino" class="contacto-logo-img" />
       </div>
 
       <h2 class="contacto-title">¿Querés sumarte?</h2>
       <p class="contacto-text">
-        Legado Murialdino es de todos. Si querés participar, proponer ideas o simplemente conocernos mejor, estamos para vos.
+        Legado Murialdino es de todos. Mandanos tu mensaje, propuesta o idea — la leemos todos.
       </p>
 
-      <!-- FORMULARIO DE CONTACTO FUNCIONAL -->
-      <form class="contacto-form" id="contactForm" novalidate>
+      <!-- ══ FORMULARIO — envía a bautycortereal@gmail.com via EmailJS ══ -->
+      <form class="contacto-form" id="contactForm" novalidate autocomplete="off">
+
+        <!-- Fila 1: Nombre y Apellido -->
         <div class="form-row">
           <div class="form-group">
-            <label for="cf-nombre">Tu nombre</label>
-            <input type="text" id="cf-nombre" name="nombre" placeholder="Ej: Juan Pérez" autocomplete="name" required />
-            <span class="form-error" id="err-nombre"></span>
+            <label for="cf-nombre">Nombre <span class="req" aria-hidden="true">*</span></label>
+            <input
+              type="text"
+              id="cf-nombre"
+              name="nombre"
+              placeholder="Ej: Bautista"
+              autocomplete="given-name"
+              required
+            />
+            <span class="form-error" id="err-nombre" role="alert"></span>
           </div>
           <div class="form-group">
-            <label for="cf-curso">Tu curso</label>
-            <input type="text" id="cf-curso" name="curso" placeholder="Ej: 3° A" required />
-            <span class="form-error" id="err-curso"></span>
+            <label for="cf-apellido">Apellido <span class="req" aria-hidden="true">*</span></label>
+            <input
+              type="text"
+              id="cf-apellido"
+              name="apellido"
+              placeholder="Ej: López Corte Real"
+              autocomplete="family-name"
+              required
+            />
+            <span class="form-error" id="err-apellido" role="alert"></span>
           </div>
         </div>
-        <div class="form-group">
-          <label for="cf-mensaje">Tu mensaje o propuesta</label>
-          <textarea id="cf-mensaje" name="mensaje" rows="4" placeholder="Contanos tu idea, pregunta o lo que quieras decirnos..." required></textarea>
-          <span class="form-error" id="err-mensaje"></span>
+
+        <!-- Fila 2: Teléfono y Gmail -->
+        <div class="form-row">
+          <div class="form-group">
+            <label for="cf-telefono">
+              Teléfono <span class="req" aria-hidden="true">*</span>
+              <span class="label-hint">(WhatsApp preferido)</span>
+            </label>
+            <input
+              type="tel"
+              id="cf-telefono"
+              name="telefono"
+              placeholder="Ej: 11 2345-6789"
+              autocomplete="tel"
+              required
+            />
+            <span class="form-error" id="err-telefono" role="alert"></span>
+          </div>
+          <div class="form-group">
+            <label for="cf-email">
+              Gmail
+              <span class="label-hint">(opcional)</span>
+            </label>
+            <input
+              type="email"
+              id="cf-email"
+              name="email"
+              placeholder="Ej: vos@gmail.com"
+              autocomplete="email"
+            />
+            <span class="form-error" id="err-email" role="alert"></span>
+          </div>
         </div>
-        <button type="submit" class="btn btn-primary btn-full">
+
+        <!-- Mensaje -->
+        <div class="form-group">
+          <label for="cf-mensaje">
+            Tu mensaje o propuesta <span class="req" aria-hidden="true">*</span>
+          </label>
+          <textarea
+            id="cf-mensaje"
+            name="mensaje"
+            rows="5"
+            placeholder="Contanos tu idea, pregunta o lo que quieras decirnos..."
+            required
+          ></textarea>
+          <span class="form-error" id="err-mensaje" role="alert"></span>
+        </div>
+
+        <p class="form-note"><span class="req">*</span> Campos obligatorios</p>
+
+        <button type="submit" class="btn btn-primary btn-full" id="submitBtn">
           <span class="btn-text">Enviar mensaje</span>
           <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
             <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
           </svg>
+          <span class="btn-loader" id="btnLoader" aria-hidden="true"></span>
         </button>
+
       </form>
+      <!-- FIN FORMULARIO -->
 
       <div class="contacto-motto">
         <span>Haud Mori</span>
@@ -550,7 +515,7 @@
   <!-- FOOTER -->
   <footer class="footer">
     <div class="footer-inner">
-      <svg class="footer-shield" aria-hidden="true"><use href="#logo-shield"/></svg>
+      <img src="logosinfondo.png" alt="" class="footer-logo-img" aria-hidden="true" />
       <div class="footer-text">
         <span>© 2025 Legado Murialdino</span>
         <span class="footer-sep">·</span>
